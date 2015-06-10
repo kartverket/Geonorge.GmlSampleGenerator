@@ -5,7 +5,9 @@ VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kartverket.GmlSampleGenerator", "Kartverket.GmlSampleGenerator\Kartverket.GmlSampleGenerator.csproj", "{34DBECA5-B19F-4B2A-AB30-7BC273CEEE27}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kartverket.GmlSampleGenerator.Tests", "Kartverket.GmlSampleGenerator.Tests\Kartverket.GmlSampleGenerator.Tests.csproj", "{9B77B9C4-72FC-4B6F-8DD2-577664546B89}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kartverket.Generators", "Kartverket.Generators\Kartverket.Generators.csproj", "{DCFB11A2-9E74-403F-90E9-EC07F53AA164}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kartverket.Generators.Tests", "Kartverket.Generators.Tests\Kartverket.Generators.Tests.csproj", "{EC7DEB03-BE86-43F1-9431-575CD78E326C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +19,14 @@ Global
 		{34DBECA5-B19F-4B2A-AB30-7BC273CEEE27}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34DBECA5-B19F-4B2A-AB30-7BC273CEEE27}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34DBECA5-B19F-4B2A-AB30-7BC273CEEE27}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9B77B9C4-72FC-4B6F-8DD2-577664546B89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9B77B9C4-72FC-4B6F-8DD2-577664546B89}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9B77B9C4-72FC-4B6F-8DD2-577664546B89}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9B77B9C4-72FC-4B6F-8DD2-577664546B89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCFB11A2-9E74-403F-90E9-EC07F53AA164}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCFB11A2-9E74-403F-90E9-EC07F53AA164}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCFB11A2-9E74-403F-90E9-EC07F53AA164}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCFB11A2-9E74-403F-90E9-EC07F53AA164}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC7DEB03-BE86-43F1-9431-575CD78E326C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC7DEB03-BE86-43F1-9431-575CD78E326C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC7DEB03-BE86-43F1-9431-575CD78E326C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC7DEB03-BE86-43F1-9431-575CD78E326C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
