@@ -46,7 +46,7 @@ namespace Kartverket.Generators
 
             XElement featureCollection = new XElement(GML_NAMESPACE + "FeatureCollection", gmlIdAttribute, namespaces);
 
-            XElement featureMembers = new XElement(GML_NAMESPACE + "featureMembers");
+            XElement featureMembers = new XElement(GML_NAMESPACE + "featureMembers", GenerateFeaturemembers());
 
             featureCollection.Add(featureMembers);
 
@@ -54,6 +54,16 @@ namespace Kartverket.Generators
 
 
             return gmlDoc;
+        }
+
+        private object[] GenerateFeaturemembers()
+        {
+            return new object[] 
+                {
+                    new XElement("featuremember-test_1"),
+                    new XElement("featuremember-test_2"),
+                    new XElement("featuremember-test_3")
+                };
         }
 
         private object[] SetupNamespaces(string xmlns, string targetNamespace, string xsdDocument)
