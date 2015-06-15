@@ -76,9 +76,7 @@ namespace Kartverket.Generators
 
                 //GML ID påføring
                 XDocument doc = new XDocument();
-                XElement fc = new XElement(_gml + "FeatureCollection",
-                    new XAttribute(_gml + "id", "_" + Guid.NewGuid().ToString()),
-                    SetupNamespaces(xmlns, targetNamespace, xsdDocument));
+                XElement fc = new XElement(_gml + "FeatureCollection", new XAttribute(_gml + "id", "_" + Guid.NewGuid().ToString()), SetupNamespaces(xmlns, targetNamespace, xsdDocument));
 
 
                 XElement fm = new XElement(_gml + "featureMembers");
