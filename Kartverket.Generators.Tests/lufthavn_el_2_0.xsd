@@ -1,0 +1,2502 @@
+<?xml version="1.0" encoding="UTF-8"?><schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:app="http://skjema.geonorge.no/SOSI/produktspesifikasjon/avinor/lufthavn_el/2.0" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:sc="http://www.interactive-instruments.de/ShapeChange/AppInfo" elementFormDefault="qualified" targetNamespace="http://skjema.geonorge.no/SOSI/produktspesifikasjon/avinor/lufthavn_el/2.0" version="2.0">
+  <annotation>
+    <documentation>Denne instruksen skal benyttes ved innmåling av alle ledningsnett som er i Avinor sitt eie. Instruksen dekker ledningsnett for el (elektrisitet) og ekom, med kabeltyper som fiber, telekabler eller kabeltv-nett, som frakter elektrisitet eller signal til komponenter som tilhører Avinor. Det kan enten være nybygde eller eldre nett det blir gjort datafangst på.  
+
+Instruksen gir en beskrivelse av hvilke objekter som skal måles inn og hvordan de skal kodes. Kodingen som er gjengitt i dette dokumentet inneholder alle de temaene som skal måles inn på Avinor sine el og ekom ledninger. Skulle det likevel være behov for å finne koder for andre objekter enn de som er listet opp her så finnes det beskrivelser for dette hos Kartverket.no under Temaoversikt/Standarder/SOSI/ SOSI del 2 og Fagområde ledningsnett 4.5. Det er alltid siste versjon av SOSI ledning som skal gjelde. 
+http://www.statkart.no/Standarder/SOSI/SOSI-standarden-del-1-og-2/
+
+Om fargebruk i modellen:
+De ikke-abstrakte objekttypene, dvs de som skal gjenfinnes på et datasett, er i diagrammene under vist med gul farge.</documentation>
+  </annotation>
+  <import namespace="http://www.interactive-instruments.de/ShapeChange/AppInfo" schemaLocation="http://shapechange.net/resources/schema/ShapeChangeAppinfo.xsd"/>
+  <import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
+  <!--XML Schema document created by ShapeChange - http://shapechange.net/-->
+  <element name="Adresse" substitutionGroup="gml:AbstractObject" type="app:AdresseType"/>
+  <complexType name="AdresseType">
+    <sequence>
+      <element minOccurs="0" name="adressebokstav" type="string">
+        <annotation>
+          <documentation>trengs det bokstav benyttes i tillegg til adressenummer for å identifisere enkelt-adresser</documentation>
+          <appinfo>
+            <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">ADRESSEBOKSTAV</taggedValue>
+          </appinfo>
+        </annotation>
+      </element>
+      <element minOccurs="0" name="adressekode" type="integer">
+        <annotation>
+          <documentation>gatekoden til en veglenke, ref Matrikkelen</documentation>
+          <appinfo>
+            <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">ADRESSEKODE</taggedValue>
+          </appinfo>
+        </annotation>
+      </element>
+      <element name="adressenavn" type="string">
+        <annotation>
+          <documentation>navn på en veglenke, ref Matrikkelen</documentation>
+          <appinfo>
+            <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">ADRESSENAVN</taggedValue>
+          </appinfo>
+        </annotation>
+      </element>
+      <element minOccurs="0" name="adressenummer" type="integer">
+        <annotation>
+          <documentation>nummer som viser til hvor adressen er innafor adressekode/adressenavn</documentation>
+          <appinfo>
+            <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">ADRESSENUMMER</taggedValue>
+          </appinfo>
+        </annotation>
+      </element>
+      <element minOccurs="0" name="postnummer" type="integer">
+        <annotation>
+          <appinfo>
+            <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">POSTNUMMER</taggedValue>
+          </appinfo>
+        </annotation>
+      </element>
+      <element minOccurs="0" name="poststed" type="string">
+        <annotation>
+          <appinfo>
+            <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">POSTSTED</taggedValue>
+          </appinfo>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType name="AdressePropertyType">
+    <sequence>
+      <element ref="app:Adresse"/>
+    </sequence>
+  </complexType>
+  <element abstract="true" name="Bygningsavgrensning" substitutionGroup="app:SOSI_Objekt" type="app:BygningsavgrensningType">
+    <annotation>
+      <documentation>BuildingDelimitation: abstract supertype which carries the geometry of the delimitation lines</documentation>
+    </annotation>
+  </element>
+  <complexType abstract="true" name="BygningsavgrensningType">
+    <complexContent>
+      <extension base="app:SOSI_ObjektType">
+        <sequence>
+          <element name="grense" type="gml:CurvePropertyType">
+            <annotation>
+              <documentation>border: course follwing the transition between different real world phenomena</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">GRENSE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="BygningsavgrensningPropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:Bygningsavgrensning"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="EL_Jordingspunkt" substitutionGroup="app:EL_Kopling" type="app:EL_JordingspunktType">
+    <annotation>
+      <documentation>Elektrode som har til oppgave å lede feilstrøm og overspenninger til jord.
+
+Ref NS3420 / WN1 - Jordingsmateriell / WN1:1 Funksjon 1 Jordelektrode
+
+Registreringsmetode: Enkeltpunkt
+Beskrivelse: Et jordingspunkt kan være et spyd i strømførende materiale som stikker ned i jorda. Hensikten er at spenninger tilført spydet via jordingskabel blir utlignet i jorda rundt jordspydet.  
+Grunnrissreferanse: Senter topp jordingspunkt
+Høydereferanse: Topp senter</documentation>
+    </annotation>
+  </element>
+  <complexType name="EL_JordingspunktType">
+    <complexContent>
+      <extension base="app:EL_KoplingType">
+        <sequence>
+          <element name="funksjon" type="gml:CodeType">
+            <annotation>
+              <documentation>funksjonen til jordingspunktet</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">JORDING_FUNKSJON</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="material" type="gml:CodeType">
+            <annotation>
+              <documentation>materialet som er brukt på jordingspunktet</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">EL_MATERIAL</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="EL_JordingspunktPropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:EL_Jordingspunkt"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="EL_Kabelskap" substitutionGroup="app:Skap" type="app:EL_KabelskapType">
+    <annotation>
+      <documentation>Registreringsmetode: Enkeltpunkt
+Beskrivelse: Beskyttelseskasse plassert vanligvis på bakken, som inneholder koblinger for elektrisk strøm, signal eller annet.	
+Grunnrissreferanse: Senter topp front skap.
+Høydereferanse: Topp senter front.</documentation>
+    </annotation>
+  </element>
+  <complexType name="EL_KabelskapType">
+    <complexContent>
+      <extension base="app:SkapType">
+        <sequence>
+          <element name="konstruksjonsmaterial" type="gml:CodeType">
+            <annotation>
+              <documentation>materialet som er brukt for å konstruere kabelskapet</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">KONSTRUKSJONSMATERIAL</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="EL_KabelskapPropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:EL_Kabelskap"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element abstract="true" name="EL_Kopling" substitutionGroup="app:Kopling" type="app:EL_KoplingType"/>
+  <complexType abstract="true" name="EL_KoplingType">
+    <complexContent>
+      <extension base="app:KoplingType">
+        <sequence/>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="EL_KoplingPropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:EL_Kopling"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="EL_Kum" substitutionGroup="app:Kum" type="app:EL_KumType">
+    <annotation>
+      <documentation>Registreringsmetode: Enkeltpunkt 
+Beskrivelse: Et fysisk objekt som regel av betong. Selve kummen blir gravd ned og det eneste synlige på overflaten vil være kummens lokk. Lokket er som oftest av metall. En trekkekum vil være et sted hvor man enkelt får tilgang til kabler og trekkerør. 
+Grunnrissreferanse: Senter kum
+Høydereferanse: Topp kumlokk</documentation>
+    </annotation>
+  </element>
+  <complexType name="EL_KumType">
+    <complexContent>
+      <extension base="app:KumType">
+        <sequence/>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="EL_KumPropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:EL_Kum"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="EL_Luftlinje" substitutionGroup="app:ElektrisitetsLedning" type="app:EL_LuftlinjeType">
+    <annotation>
+      <documentation>kabelskap spom inngår i elektriske ledningsnettverk</documentation>
+    </annotation>
+  </element>
+  <complexType name="EL_LuftlinjeType">
+    <complexContent>
+      <extension base="app:ElektrisitetsLedningType">
+        <sequence>
+          <element name="linjehøyde" type="double">
+            <annotation>
+              <documentation>enhet meter</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LINJEHØYDE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="EL_LuftlinjePropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:EL_Luftlinje"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="EL_Nettstasjon" substitutionGroup="app:EL_Stasjon" type="app:EL_NettstasjonType">
+    <annotation>
+      <documentation>Registreringsmetode: Enkeltpunkt
+Beskrivelse: En nettstasjon er en trafo som transformerer høye spenninger ned til lavere spenninger. Det fysiske objektet nettstasjon ligger gjerne i et eget bygg eller i en del av en bygning. Selve nettstasjonen måles inn slik som angitt nedenfor.  
+Grunnrissreferanse: Senter inngangsdør bakkenivå.  
+Høydereferanse: Terreng</documentation>
+    </annotation>
+  </element>
+  <complexType name="EL_NettstasjonType">
+    <complexContent>
+      <extension base="app:EL_StasjonType">
+        <sequence/>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="EL_NettstasjonPropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:EL_Nettstasjon"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element abstract="true" name="EL_Stasjon" substitutionGroup="app:Nettverkstasjon" type="app:EL_StasjonType"/>
+  <complexType abstract="true" name="EL_StasjonType">
+    <complexContent>
+      <extension base="app:NettverkstasjonType">
+        <sequence>
+          <element name="stasjontype" type="gml:CodeType">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">EL_STASJONSTYPE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="EL_StasjonPropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:EL_Stasjon"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element abstract="true" name="ElektrisitetsLedning" substitutionGroup="app:Ledning" type="app:ElektrisitetsLedningType"/>
+  <complexType abstract="true" name="ElektrisitetsLedningType">
+    <complexContent>
+      <extension base="app:LedningType">
+        <sequence/>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="ElektrisitetsLedningPropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:ElektrisitetsLedning"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element abstract="true" name="Fellesegenskaper1" substitutionGroup="app:SOSI_Objekt" type="app:Fellesegenskaper1Type"/>
+  <complexType abstract="true" name="Fellesegenskaper1Type">
+    <complexContent>
+      <extension base="app:SOSI_ObjektType">
+        <sequence>
+          <element minOccurs="0" name="nettverkstype" type="gml:CodeType">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LEDN_NETTVERKSTYPE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="fagområde" type="app:LedningsFagområdeType"/>
+          <element minOccurs="0" name="drifter" type="string">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LEDN_DRIFTER</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="driftsattår" type="integer">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">DRIFTSATTÅR</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="eier" type="string">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LEDN_EIER</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="høydereferanse" type="gml:CodeType">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LEDN_HØYDEREFERANSE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="sikkerhetsgradering" type="gml:CodeType">
+            <annotation>
+              <appinfo>
+                <defaultCodeSpace xmlns="http://www.opengis.net/gml/3.2">http://skjema.geonorge.no/SOSI/produktspesifikasjon/avinor/Lufthavn_El/Sikkerhetsgradering</defaultCodeSpace>
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="status" type="gml:CodeType"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="Fellesegenskaper1PropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:Fellesegenskaper1"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element abstract="true" name="Framføringsnode" substitutionGroup="app:Kopling" type="app:FramføringsnodeType">
+    <annotation>
+      <documentation>Tilsvarer det som INSPIRE Utility 2.9 kaller UtilityNodeContainer</documentation>
+    </annotation>
+  </element>
+  <complexType abstract="true" name="FramføringsnodeType">
+    <complexContent>
+      <extension base="app:KoplingType">
+        <sequence/>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="FramføringsnodePropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:Framføringsnode"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element abstract="true" name="Framføringsvei" substitutionGroup="app:Ledning" type="app:FramføringsveiType">
+    <annotation>
+      <documentation>Foreslått som felles-begrep på Tele/signalmøte 31.5.2012</documentation>
+    </annotation>
+  </element>
+  <complexType abstract="true" name="FramføringsveiType">
+    <complexContent>
+      <extension base="app:LedningType">
+        <sequence>
+          <element maxOccurs="unbounded" minOccurs="0" name="bruk" type="gml:CodeType">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">BRUK</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="søketråd" type="app:JaNeiType">
+            <annotation>
+              <documentation>mulighet for å kunne påvise framføringsveien</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">SØKETRÅD</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="ytreBredde" type="double">
+            <annotation>
+              <documentation>enhet meter</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">YTREBREDDE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="ytreHøyde" type="double">
+            <annotation>
+              <documentation>enhet meter</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">YTREHØYDE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="FramføringsveiPropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:Framføringsvei"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="GPU" substitutionGroup="app:EL_Kopling" type="app:GPUType">
+    <annotation>
+      <documentation>Ground Power Unit
+
+Node i nettverket som markerer en overgang til anna nettverk med andre eiere ("Leveringspunkt")
+
+Registreringsmetode: Enkeltpunkt 
+Beskrivelse: En GPU kan være en kum og den kan være et skap på vegg eller i mast. GPU inneholder tilkoblingspunkt for elektrisitet for fly og er derfor klassifisert som et EL_TILKNYTNINGSPUNKT. 
+Grunnrissreferanse: Innmåling av GPU kum: Senter topp. Er GPUen et skap på vegg eller i mast måles skapet i Senter topp front.  
+Høydereferanse:	
+&lt;ul&gt;
+	&lt;li&gt;Kum: Topp (som for vanlig kummer) &lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul&gt;
+	&lt;li&gt;Skap: Topp (som for kabelskap) &lt;/li&gt;
+&lt;/ul&gt;</documentation>
+    </annotation>
+  </element>
+  <complexType name="GPUType">
+    <complexContent>
+      <extension base="app:EL_KoplingType">
+        <sequence>
+          <element minOccurs="0" name="bredde" type="double">
+            <annotation>
+              <documentation>enhet: cm</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">BREDDE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="dybde" type="double">
+            <annotation>
+              <documentation>enhet: cm</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">DYBDE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="høyde" type="double">
+            <annotation>
+              <documentation>enhet: cm</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">HØYDE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="GPUPropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:GPU"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="Identifikasjon" substitutionGroup="gml:AbstractObject" type="app:IdentifikasjonType">
+    <annotation>
+      <documentation>Unik identifikasjon av et objekt, ivaretatt av den ansvarlige produsent/forvalter, som kan benyttes av eksterne applikasjoner som referanse til objektet. 
+
+NOTE1 Denne eksterne objektidentifikasjonen må ikke forveksles med en tematisk objektidentifikasjon, slik som f.eks bygningsnummer. 
+
+NOTE 2 Denne unike identifikatoren vil ikke endres i løpet av objektets levetid.</documentation>
+    </annotation>
+  </element>
+  <complexType name="IdentifikasjonType">
+    <sequence>
+      <element name="lokalId" type="string">
+        <annotation>
+          <documentation>lokal identifikator, tildelt av dataleverendør/dataforvalter. Den lokale identifikatoren er unik innenfor navnerommet, ingen andre objekter har samme identifikator.
+
+NOTE: Det er data leverendørens ansvar å sørge for at denne lokale identifikatoren er unik innenfor navnerommet.</documentation>
+          <appinfo>
+            <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LOKALID</taggedValue>
+          </appinfo>
+        </annotation>
+      </element>
+      <element name="navnerom" type="string">
+        <annotation>
+          <documentation>navnerom som unikt identifiserer datakilden til objektet, starter med to bokstavs kode jfr ISO 3166. Benytter understreking  ("_") dersom data produsenten ikke er assosiert med bare et land.
+
+NOTE 1 : Verdien for nanverom vil eies av den dataprodusent som har ansvar for de unike identifikatorene og vil registreres i "INSPIRE external  Object Identifier Namespaces Register"
+
+Eksempel: NO for Norge.</documentation>
+          <appinfo>
+            <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">NAVNEROM</taggedValue>
+          </appinfo>
+        </annotation>
+      </element>
+      <element minOccurs="0" name="versjonId" type="string">
+        <annotation>
+          <documentation>identifikasjon av en spesiell versjon av et geografisk objekt (instans), maksimum lengde på 25 karakterers. Dersom spesifikasjonen av et geografisk objekt med en identifikasjon inkludererer livsløpssyklusinformasjon, benyttes denne versjonId for å skille mellom ulike versjoner av samme objekt. versjonId er en unik  identifikasjon av versjonen. 
+
+NOTE Maksimum lengde er valgt for å tillate tidsregistrering i henhold til  ISO 8601, slik som  "2007-02-12T12:12:12+05:30" som versjonId.</documentation>
+          <appinfo>
+            <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">VERSJONID</taggedValue>
+          </appinfo>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType name="IdentifikasjonPropertyType">
+    <sequence>
+      <element ref="app:Identifikasjon"/>
+    </sequence>
+  </complexType>
+  <element name="InneholderKabel" substitutionGroup="gml:AbstractObject" type="app:InneholderKabelType">
+    <annotation>
+      <documentation>informasjon om hvilken kabel som ligger i denne traseen. 
+
+Merknad: Kablene som ligger i traseen identifiseres ved Driftsmerking (unik ID for den fysiske nettverkskomponenten, vil kunne brukes til å knytte sammen informasjon om samme komponenten forvaltet i ulike databaser.). Denne velges framfor Identifikasjon, siden det ikke er gitt at kablene det refereres til er representert i datasettet, men heller brukes for å identifisere kabelen i andre databaser.</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">INNEHOLDERKABEL</taggedValue>
+      </appinfo>
+    </annotation>
+  </element>
+  <complexType name="InneholderKabelType">
+    <sequence>
+      <element name="driftsmerking" type="string">
+        <annotation>
+          <appinfo>
+            <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">DRIFTSMERKING</taggedValue>
+          </appinfo>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType name="InneholderKabelPropertyType">
+    <sequence>
+      <element ref="app:InneholderKabel"/>
+    </sequence>
+  </complexType>
+  <simpleType name="JaNeiType">
+    <union memberTypes="app:JaNeiEnumerationType app:JaNeiOtherType"/>
+  </simpleType>
+  <simpleType name="JaNeiEnumerationType">
+    <restriction base="string">
+      <enumeration value="Ja"/>
+      <enumeration value="Nei"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="JaNeiOtherType">
+    <restriction base="string">
+      <pattern value="other: \w{2,}"/>
+    </restriction>
+  </simpleType>
+  <element name="Jordingsledning" substitutionGroup="app:ElektrisitetsLedning" type="app:JordingsledningType">
+    <annotation>
+      <documentation>Registreringsmetode: Punkt i sekvens
+Beskrivelse: En kabel på lik linje med ordinære strømførende kabler men som har til hensikt å utligne spenninger som kan være skadelige for instrumenter og mennesker.  
+Grunnrissreferanse: Senter kabel. 
+Høydereferanse: Topp</documentation>
+    </annotation>
+  </element>
+  <complexType name="JordingsledningType">
+    <complexContent>
+      <extension base="app:ElektrisitetsLedningType">
+        <sequence/>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="JordingsledningPropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:Jordingsledning"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element abstract="true" name="Kopling" substitutionGroup="app:Nettverkskomponent" type="app:KoplingType">
+    <annotation>
+      <documentation>generell betegnelse på objekt som er node (punkt) i et ledningsnettverk</documentation>
+    </annotation>
+  </element>
+  <complexType abstract="true" name="KoplingType">
+    <complexContent>
+      <extension base="app:NettverkskomponentType">
+        <sequence>
+          <element minOccurs="0" name="posisjon" type="gml:PointPropertyType">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">POSISJON</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="KoplingPropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:Kopling"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element abstract="true" name="Kum" substitutionGroup="app:Framføringsnode" type="app:KumType">
+    <annotation>
+      <documentation>et fysisk objekt som regel av stål, plast eller betong som er gravd ned i bakken, og som lager et rom.  Inneholder en eller annen form for koplinger med tilkoblede ledninger
+
+Brukes for vanligvis runde "rom", med diameter opp til ca 2,5m.
+De som er større, bør klassifiseres som nettverkstasjoner.
+
+Posisjonen til kummen er for nord/øst senter kum og for høyde er det bunn, innvendig kum.
+
+
+INSPIRE Utility 2.9 Manhole</documentation>
+    </annotation>
+  </element>
+  <complexType abstract="true" name="KumType">
+    <complexContent>
+      <extension base="app:FramføringsnodeType">
+        <sequence>
+          <element minOccurs="0" name="bredde" type="double">
+            <annotation>
+              <documentation>bredden på en rektangulær kum
+
+Enhet: cm</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">BREDDE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="diameter" type="double">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">DIAMETER</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="funksjon" type="gml:CodeType">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">FUNKSJON</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="høyde" type="double">
+            <annotation>
+              <documentation>innvendig høyde på kummen, målt fra bunnen av kummen til innvendig topp, enhet meter.</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">HØYDE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="konstruksjonsmateriale" type="gml:CodeType">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">KONSTRUKSJONSMATERIAL</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="kumform" type="gml:CodeType">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">KUMFORM</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="lengde" type="double">
+            <annotation>
+              <documentation>Lengden på en rektangulær kum
+
+Enhet: cm</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LENGDE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="KumPropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:Kum"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element abstract="true" name="Ledning" substitutionGroup="app:Nettverkskomponent" type="app:LedningType">
+    <annotation>
+      <documentation>generell betegnelse for langsgående objekt i et ledningsnettverk</documentation>
+    </annotation>
+  </element>
+  <complexType abstract="true" name="LedningType">
+    <complexContent>
+      <extension base="app:NettverkskomponentType">
+        <sequence>
+          <element name="beliggenhet" type="gml:CurvePropertyType">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">BELIGGENHET</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="fraKobling" type="app:KoplingPropertyType">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">FRAKOBLING</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="tilKobling" type="app:KoplingPropertyType">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">TILKOPLING</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="LedningPropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:Ledning"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <simpleType name="LedningsFagområdeType">
+    <annotation>
+      <documentation>gruppering av fagmiljø, oftest med ulik fagutdanning, som har ansvar for ledningsnett knyttet til sitt fag.
+
+Merknad: Hvert ledningsfagområde kan ha ansvar for flere ledningsnettverkstyper.</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LEDN_FAGOMRÅDE</taggedValue>
+      </appinfo>
+    </annotation>
+    <union memberTypes="app:LedningsFagområdeEnumerationType app:LedningsFagområdeOtherType"/>
+  </simpleType>
+  <simpleType name="LedningsFagområdeEnumerationType">
+    <annotation>
+      <documentation>gruppering av fagmiljø, oftest med ulik fagutdanning, som har ansvar for ledningsnett knyttet til sitt fag.
+
+Merknad: Hvert ledningsfagområde kan ha ansvar for flere ledningsnettverkstyper.</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LEDN_FAGOMRÅDE</taggedValue>
+      </appinfo>
+    </annotation>
+    <restriction base="string">
+      <enumeration value="VannAvløp"/>
+      <enumeration value="Elektrisitet"/>
+      <enumeration value="eKOM"/>
+      <enumeration value="Telekommunikasjon"/>
+      <enumeration value="KabelTV"/>
+      <enumeration value="Fjernvarme"/>
+      <enumeration value="Fjernvarme/kjøling"/>
+      <enumeration value="OljeGass"/>
+      <enumeration value="Samferdsel"/>
+      <enumeration value="Ventilasjon"/>
+      <enumeration value="Uspesifisert"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="LedningsFagområdeOtherType">
+    <restriction base="string">
+      <pattern value="other: \w{2,}"/>
+    </restriction>
+  </simpleType>
+  <element name="LedningsLengde" substitutionGroup="gml:AbstractObject" type="app:LedningsLengdeType">
+    <annotation>
+      <documentation>ledningslengde med forklaring</documentation>
+    </annotation>
+  </element>
+  <complexType name="LedningsLengdeType">
+    <sequence>
+      <element name="lengde" type="double">
+        <annotation>
+          <documentation>lengde oppgitt i meter</documentation>
+          <appinfo>
+            <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LENGDE</taggedValue>
+          </appinfo>
+        </annotation>
+      </element>
+      <element name="lengdetype" type="gml:CodeType">
+        <annotation>
+          <appinfo>
+            <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LENGDETYPE</taggedValue>
+          </appinfo>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType name="LedningsLengdePropertyType">
+    <sequence>
+      <element ref="app:LedningsLengde"/>
+    </sequence>
+  </complexType>
+  <element name="Link" substitutionGroup="gml:AbstractObject" type="app:LinkType">
+    <annotation>
+      <documentation>referanse  til et informasjonselement, enten lokalt eller globalt
+
+Eksempel:
+Som lokal : //skrisrv2/tjenester/sosiforv/web/welcome.htm
+Som global: http://www.statkart.no/standard/sosi/ACCESS/welcome.htm</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LINK</taggedValue>
+      </appinfo>
+    </annotation>
+  </element>
+  <complexType name="LinkType">
+    <sequence/>
+  </complexType>
+  <complexType name="LinkPropertyType">
+    <sequence>
+      <element ref="app:Link"/>
+    </sequence>
+  </complexType>
+  <element name="Lufthavnlys" substitutionGroup="app:SOSI_Objekt" type="app:LufthavnlysType">
+    <annotation>
+      <documentation>spesielle lys for en lufthavn tiltenkt navigasjon og visualisering av oppmerking i mørket</documentation>
+    </annotation>
+  </element>
+  <complexType name="LufthavnlysType">
+    <complexContent>
+      <extension base="app:SOSI_ObjektType">
+        <sequence>
+          <element minOccurs="0" name="glidebanevinkel" type="double">
+            <annotation>
+              <documentation>retning/grader i elevasjon</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">GLIDEBANEVINKEL</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="lufthavnlysfarge" type="app:LufthavnlysfargeType">
+            <annotation>
+              <documentation>angir farge eller kombinasjon av farger for lyset</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LHLYSFARGE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="lufthavnlysintensitet" type="app:LufthavnlysintensitetType">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LUFTHAVNLYSINTENSITET</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="lufthavnlysOpphøydNedfelt" type="app:LufthavnlysOpphøydNedfeltType">
+            <annotation>
+              <documentation>angir hvorvidt lyset er elevert eller nedfelt</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LHLYS_OPPHØYD_NEDFELT</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="lufthavnlysretning" type="app:LufthavnlysretningType">
+            <annotation>
+              <documentation>angir retningsbestemmelse for lyset</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LUFTHAVNLYSRETNING</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="lufthavnlystype" type="app:LufthavnlystypeType">
+            <annotation>
+              <documentation>angivelse av forskjellige typer belysning spesielt for en lufthavn, og i forbindelse med luftfartsrelatert virksomhet</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LHLYSTYPE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="område" type="gml:SurfacePropertyType">
+            <annotation>
+              <documentation>objektets utstrekning</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">Flate</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="posisjon" type="gml:PointPropertyType">
+            <annotation>
+              <documentation>sted som objektet eksisterer på</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">NØ</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="LufthavnlysPropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:Lufthavnlys"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <simpleType name="LufthavnlysOpphøydNedfeltType">
+    <annotation>
+      <documentation>angir hvorvidt lyset er elevert eller nedfelt</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LHLYS_OPPHØYD_NEDFELT</taggedValue>
+      </appinfo>
+    </annotation>
+    <union memberTypes="app:LufthavnlysOpphøydNedfeltEnumerationType app:LufthavnlysOpphøydNedfeltOtherType"/>
+  </simpleType>
+  <simpleType name="LufthavnlysOpphøydNedfeltEnumerationType">
+    <annotation>
+      <documentation>angir hvorvidt lyset er elevert eller nedfelt</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LHLYS_OPPHØYD_NEDFELT</taggedValue>
+      </appinfo>
+    </annotation>
+    <restriction base="string">
+      <enumeration value="N"/>
+      <enumeration value="O"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="LufthavnlysOpphøydNedfeltOtherType">
+    <restriction base="string">
+      <pattern value="other: \w{2,}"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="LufthavnlysfargeType">
+    <annotation>
+      <documentation>angir farge eller kombinasjon av farger for lyset</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LHLYSFARGE</taggedValue>
+      </appinfo>
+    </annotation>
+    <union memberTypes="app:LufthavnlysfargeEnumerationType app:LufthavnlysfargeOtherType"/>
+  </simpleType>
+  <simpleType name="LufthavnlysfargeEnumerationType">
+    <annotation>
+      <documentation>angir farge eller kombinasjon av farger for lyset</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LHLYSFARGE</taggedValue>
+      </appinfo>
+    </annotation>
+    <restriction base="string">
+      <enumeration value="10"/>
+      <enumeration value="11"/>
+      <enumeration value="12"/>
+      <enumeration value="13"/>
+      <enumeration value="14"/>
+      <enumeration value="15"/>
+      <enumeration value="16"/>
+      <enumeration value="17"/>
+      <enumeration value="18"/>
+      <enumeration value="19"/>
+      <enumeration value="20"/>
+      <enumeration value="21"/>
+      <enumeration value="22"/>
+      <enumeration value="23"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="LufthavnlysfargeOtherType">
+    <restriction base="string">
+      <pattern value="other: \w{2,}"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="LufthavnlysintensitetType">
+    <annotation>
+      <documentation>angir intensitetsverdi for lyset</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LUFTHAVNLYSINTENSITET</taggedValue>
+      </appinfo>
+    </annotation>
+    <union memberTypes="app:LufthavnlysintensitetEnumerationType app:LufthavnlysintensitetOtherType"/>
+  </simpleType>
+  <simpleType name="LufthavnlysintensitetEnumerationType">
+    <annotation>
+      <documentation>angir intensitetsverdi for lyset</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LUFTHAVNLYSINTENSITET</taggedValue>
+      </appinfo>
+    </annotation>
+    <restriction base="string">
+      <enumeration value="L"/>
+      <enumeration value="M"/>
+      <enumeration value="H"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="LufthavnlysintensitetOtherType">
+    <restriction base="string">
+      <pattern value="other: \w{2,}"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="LufthavnlysretningType">
+    <annotation>
+      <documentation>angir retningsbestemmelse for lyset</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LUFTHAVNLYSRETNING</taggedValue>
+      </appinfo>
+    </annotation>
+    <union memberTypes="app:LufthavnlysretningEnumerationType app:LufthavnlysretningOtherType"/>
+  </simpleType>
+  <simpleType name="LufthavnlysretningEnumerationType">
+    <annotation>
+      <documentation>angir retningsbestemmelse for lyset</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LUFTHAVNLYSRETNING</taggedValue>
+      </appinfo>
+    </annotation>
+    <restriction base="string">
+      <enumeration value="1"/>
+      <enumeration value="2"/>
+      <enumeration value="3"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="LufthavnlysretningOtherType">
+    <restriction base="string">
+      <pattern value="other: \w{2,}"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="LufthavnlystypeType">
+    <annotation>
+      <documentation>angir type belysning spesielt for en lufthavn, og i forbindelse med luftfartsrelatert virksomhet</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LHLYSTYPE</taggedValue>
+      </appinfo>
+    </annotation>
+    <union memberTypes="app:LufthavnlystypeEnumerationType app:LufthavnlystypeOtherType"/>
+  </simpleType>
+  <simpleType name="LufthavnlystypeEnumerationType">
+    <annotation>
+      <documentation>angir type belysning spesielt for en lufthavn, og i forbindelse med luftfartsrelatert virksomhet</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LHLYSTYPE</taggedValue>
+      </appinfo>
+    </annotation>
+    <restriction base="string">
+      <enumeration value="10"/>
+      <enumeration value="11"/>
+      <enumeration value="12"/>
+      <enumeration value="13"/>
+      <enumeration value="14"/>
+      <enumeration value="15"/>
+      <enumeration value="16"/>
+      <enumeration value="17"/>
+      <enumeration value="18"/>
+      <enumeration value="19"/>
+      <enumeration value="20"/>
+      <enumeration value="21"/>
+      <enumeration value="22"/>
+      <enumeration value="23"/>
+      <enumeration value="24"/>
+      <enumeration value="25"/>
+      <enumeration value="26"/>
+      <enumeration value="27">
+        <annotation>
+          <documentation>også kalt wig-wag</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="28"/>
+      <enumeration value="29"/>
+      <enumeration value="30"/>
+      <enumeration value="31">
+        <annotation>
+          <documentation>sekvensielle lys. Forsterket innflygningslys og running rabbit</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="39"/>
+      <enumeration value="40"/>
+      <enumeration value="41"/>
+      <enumeration value="42"/>
+      <enumeration value="49"/>
+      <enumeration value="50"/>
+      <enumeration value="51"/>
+      <enumeration value="52"/>
+      <enumeration value="53"/>
+      <enumeration value="54"/>
+      <enumeration value="55"/>
+      <enumeration value="99"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="LufthavnlystypeOtherType">
+    <restriction base="string">
+      <pattern value="other: \w{2,}"/>
+    </restriction>
+  </simpleType>
+  <element name="Lufthavnskilt" substitutionGroup="app:SOSI_Objekt" type="app:LufthavnskiltType">
+    <annotation>
+      <documentation>spesielle skilt for en lufthavn til bruk for piloter og for annen ferdsel</documentation>
+    </annotation>
+  </element>
+  <complexType name="LufthavnskiltType">
+    <complexContent>
+      <extension base="app:SOSI_ObjektType">
+        <sequence>
+          <element name="lufthavnskiltkategori" type="app:LufthavnskiltkategoriType">
+            <annotation>
+              <documentation>type skilt spesielt for en lufthavn, og i forbindelse med luftfartsrelatert virksomhet</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LUFTHAVNSKILTKATEGORI</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="lufthavnskiltlys" type="app:LufthavnskiltlysType">
+            <annotation>
+              <documentation>angir hvorvidt skiltet er belyst eller ikke</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LHSKILTLYS</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="lufthavnskilttype" type="app:LufthavnskilttypeType">
+            <annotation>
+              <documentation>type skiltgruppe</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LHSKILTTYPE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="posisjon" type="gml:PointPropertyType">
+            <annotation>
+              <documentation>sted som objektet eksisterer på</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">NØ</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="senterlinje" type="gml:CurvePropertyType">
+            <annotation>
+              <documentation>forløp som følger objektets sentrale del</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">Kurve</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="LufthavnskiltPropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:Lufthavnskilt"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <simpleType name="LufthavnskiltkategoriType">
+    <annotation>
+      <documentation>type skilt spesielt for en lufthavn, og i forbindelse med luftfartsrelatert virksomhet</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LUFTHAVNSKILTKATEGORI</taggedValue>
+      </appinfo>
+    </annotation>
+    <union memberTypes="app:LufthavnskiltkategoriEnumerationType app:LufthavnskiltkategoriOtherType"/>
+  </simpleType>
+  <simpleType name="LufthavnskiltkategoriEnumerationType">
+    <annotation>
+      <documentation>type skilt spesielt for en lufthavn, og i forbindelse med luftfartsrelatert virksomhet</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LUFTHAVNSKILTKATEGORI</taggedValue>
+      </appinfo>
+    </annotation>
+    <restriction base="string">
+      <enumeration value="10"/>
+      <enumeration value="11"/>
+      <enumeration value="12"/>
+      <enumeration value="13"/>
+      <enumeration value="14"/>
+      <enumeration value="15"/>
+      <enumeration value="16"/>
+      <enumeration value="17"/>
+      <enumeration value="18"/>
+      <enumeration value="19"/>
+      <enumeration value="20"/>
+      <enumeration value="21"/>
+      <enumeration value="22"/>
+      <enumeration value="23"/>
+      <enumeration value="24"/>
+      <enumeration value="25"/>
+      <enumeration value="26"/>
+      <enumeration value="99"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="LufthavnskiltkategoriOtherType">
+    <restriction base="string">
+      <pattern value="other: \w{2,}"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="LufthavnskiltlysType">
+    <annotation>
+      <documentation>angir hvorvidt skiltet er belyst eller ikke</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LHSKILTLYS</taggedValue>
+      </appinfo>
+    </annotation>
+    <union memberTypes="app:LufthavnskiltlysEnumerationType app:LufthavnskiltlysOtherType"/>
+  </simpleType>
+  <simpleType name="LufthavnskiltlysEnumerationType">
+    <annotation>
+      <documentation>angir hvorvidt skiltet er belyst eller ikke</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LHSKILTLYS</taggedValue>
+      </appinfo>
+    </annotation>
+    <restriction base="string">
+      <enumeration value="B"/>
+      <enumeration value="I"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="LufthavnskiltlysOtherType">
+    <restriction base="string">
+      <pattern value="other: \w{2,}"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="LufthavnskilttypeType">
+    <annotation>
+      <documentation>type skiltgruppe</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LHSKILTTYPE</taggedValue>
+      </appinfo>
+    </annotation>
+    <union memberTypes="app:LufthavnskilttypeEnumerationType app:LufthavnskilttypeOtherType"/>
+  </simpleType>
+  <simpleType name="LufthavnskilttypeEnumerationType">
+    <annotation>
+      <documentation>type skiltgruppe</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LHSKILTTYPE</taggedValue>
+      </appinfo>
+    </annotation>
+    <restriction base="string">
+      <enumeration value="10"/>
+      <enumeration value="11"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="LufthavnskilttypeOtherType">
+    <restriction base="string">
+      <pattern value="other: \w{2,}"/>
+    </restriction>
+  </simpleType>
+  <element name="Mast" substitutionGroup="app:Framføringsnode" type="app:MastType">
+    <annotation>
+      <documentation>Registreringsmetode: Enkeltpunkt
+Beskrivelse: En mast/stolpe er fysisk objekt som kan holde lys, ledningsnett, instrumenter av ulik art oppe over bakken. Alle stolper og master skal registreres som mast. 
+Grunnrissreferanse: Senter bakkeplan.
+Høydereferanse: Fot</documentation>
+    </annotation>
+  </element>
+  <complexType name="MastType">
+    <complexContent>
+      <extension base="app:FramføringsnodeType">
+        <sequence>
+          <element minOccurs="0" name="funksjon" type="gml:CodeType">
+            <annotation>
+              <documentation>2012-10-18: Kilde: JBV</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">FUNKSJON</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="konstruksjonsmaterial" type="gml:CodeType">
+            <annotation>
+              <documentation>Kilde: HeOp</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">KONSTRUKSJONSMATERIAL</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="mastehøyde" type="double">
+            <annotation>
+              <documentation>høyden på masta, fra fot/bakkenivå til topp mast.
+Enhet: meter</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">MASTEHØYDE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element maxOccurs="unbounded" minOccurs="0" name="fundament">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">FUNDAMENT</taggedValue>
+              </appinfo>
+            </annotation>
+            <complexType>
+              <complexContent>
+                <extension base="gml:AbstractFeatureMemberType">
+                  <sequence minOccurs="0">
+                    <element ref="app:Mastefundament"/>
+                  </sequence>
+                  <attributeGroup ref="gml:AssociationAttributeGroup"/>
+                </extension>
+              </complexContent>
+            </complexType>
+          </element>
+          <element maxOccurs="unbounded" minOccurs="0" name="omriss">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">OMRISS</taggedValue>
+              </appinfo>
+            </annotation>
+            <complexType>
+              <complexContent>
+                <extension base="gml:AbstractFeatureMemberType">
+                  <sequence minOccurs="0">
+                    <element ref="app:Masteomriss"/>
+                  </sequence>
+                  <attributeGroup ref="gml:AssociationAttributeGroup"/>
+                </extension>
+              </complexContent>
+            </complexType>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="MastPropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:Mast"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="Mastefundament" substitutionGroup="app:Fellesegenskaper1" type="app:MastefundamentType">
+    <annotation>
+      <documentation>Registreringsmetode: Punkt i sekvens
+Beskrivelse: Støpt fundament for frittstående konstruksjoner. 
+Grunnrissreferanse: Ved mindre fundamenter måles disse inn som punkt i topp fundament. Ved større fundament måles alle knekkpunkter topp og ytterkant fundament. Bredde, lengde og dybde skal oppgis i cm.
+Høydereferanse: Topp fundament</documentation>
+    </annotation>
+  </element>
+  <complexType name="MastefundamentType">
+    <complexContent>
+      <extension base="app:Fellesegenskaper1Type">
+        <sequence>
+          <element minOccurs="0" name="fundamentmaterial" type="gml:CodeType">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">FUNDAMENTMATERIAL</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="høyde" type="double">
+            <annotation>
+              <documentation>avstand fra bunn til topp på fundamentet, målt i meter</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">HØYDE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="omriss" type="gml:CurvePropertyType">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">OMRISS</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="lengde" type="double">
+            <annotation>
+              <documentation>enhet: cm</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LENGDE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="bredde" type="double">
+            <annotation>
+              <documentation>enhet: cm</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">BREDDE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="dybde" type="double">
+            <annotation>
+              <documentation>Enhet: cm</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">DYBDE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="MastefundamentPropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:Mastefundament"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="Masteomriss" substitutionGroup="app:Fellesegenskaper1" type="app:MasteomrissType">
+    <annotation>
+      <documentation>Registreringsmetode: Punkt i sekvens.
+Beskrivelse: Omkrets av mast med flere føtter festet til bakken eller støpt fundament. 
+Grunnrissreferanse: Bakkeplan eller topp fundament.
+Høydereferanse: Topp fundament.</documentation>
+    </annotation>
+  </element>
+  <complexType name="MasteomrissType">
+    <complexContent>
+      <extension base="app:Fellesegenskaper1Type">
+        <sequence>
+          <element name="omriss" type="gml:CurvePropertyType">
+            <annotation>
+              <documentation>omriss av det arealet masta befinner seg innenfor</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">OMRISS</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="MasteomrissPropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:Masteomriss"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <simpleType name="MålemetodeType">
+    <annotation>
+      <documentation>MeasuringMethod: metode som ligger til grunn for registrering av posisjon
+
+
+-- Definition - - 
+method on which registration of position is based</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">MÅLEMETODE</taggedValue>
+      </appinfo>
+    </annotation>
+    <union memberTypes="app:MålemetodeEnumerationType app:MålemetodeOtherType"/>
+  </simpleType>
+  <simpleType name="MålemetodeEnumerationType">
+    <annotation>
+      <documentation>MeasuringMethod: metode som ligger til grunn for registrering av posisjon
+
+
+-- Definition - - 
+method on which registration of position is based</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">MÅLEMETODE</taggedValue>
+      </appinfo>
+    </annotation>
+    <restriction base="string">
+      <enumeration value="10">
+        <annotation>
+          <documentation>Measured in terrain: Målt i terrenget , uspesifisert metode/måleinstrument</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="11">
+        <annotation>
+          <documentation>Total station: Målt i terrenget med totalstasjon</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="12">
+        <annotation>
+          <documentation>Theodolite with electronic rangefinder: Målt i terrenget med teodolitt og elektronisk avstandsmåler</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="13">
+        <annotation>
+          <documentation>Theodolite with measuring tape: Målt i terrenget med teodolitt og målebånd</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="14">
+        <annotation>
+          <documentation>Orthogonal method: Målt i terrenget, ortogonalmetoden</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="15">
+        <annotation>
+          <documentation>MeasureOut: Point calculated on the basis of other items, such as two distances or distance + direction.</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="18">
+        <annotation>
+          <documentation>Taken from plan: Tatt fra plan eller godkjent tiltak</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="19">
+        <annotation>
+          <documentation>Annet</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="20">
+        <annotation>
+          <documentation>Stereo instrument: Målt i stereoinstrument, uspesifisert instrument</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="21">
+        <annotation>
+          <documentation>Aerotriangulated: Point calculated by aerotriangulation</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="22">
+        <annotation>
+          <documentation>Analytical plotter: Målt i stereoinstrument, analytisk plotter</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="23">
+        <annotation>
+          <documentation>Autograph - normal registration: Målt i stereoinstrument, autograf, analogt instrument</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="24">
+        <annotation>
+          <documentation>Digital stereo instrument: Målt i stereoinstrument, digitalt instrument</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="30">
+        <annotation>
+          <documentation>Scanned from map: Geometri overført fra kart maskinelt ved hjelp av skanner, uspesifisert kartmedium</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="31">
+        <annotation>
+          <documentation>Scannet from pencilled original: Geometri overført fra kart maskinelt ved hjelp av skanner. Kartmedium er blyantoriginal</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="32">
+        <annotation>
+          <documentation>Scanned from ??scribing folio: Geometri overført fra kart maskinelt ved hjelp av skanner. Kartmedium er rissefolie</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="33">
+        <annotation>
+          <documentation>Scanned from transparency folio - good quality: Geometri overført fra kart maskinelt ved hjelp av skanner. Kartmedium er transparent folie av  god kvalitet.</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="34">
+        <annotation>
+          <documentation>Scanned from transparency folio - inferior quality: Geometri overført fra kart maskinelt ved hjelp av skanner. Kartmedium er transparent folie av mindre god kvalitet</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="35">
+        <annotation>
+          <documentation>Scannet from paper / hard copy: Geometri overført fra kart maskinelt ved hjelp av skanner. Kartmedium er papirkopi.</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="36">
+        <annotation>
+          <documentation>Airbourne laser scanner: Målt med laserskanner fra fly</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="37">
+        <annotation>
+          <documentation>Målt med laserskanner plassert i kjøretøy</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="38">
+        <annotation>
+          <documentation>brukes for objekter som er stedfestet med lineær referanse, enten disse leveres med stedfesting kun som lineære referanser, eller med koordinatgeometri avledet fra lineære referanser</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="40">
+        <annotation>
+          <documentation>Digitised on dig.table from orthophoto/aerial photo: Geometri overført fra ortofoto eller flybilde ved hjelp av manuell registrering på et digitaliseringsbord, uspesifisert bildemedium</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="41">
+        <annotation>
+          <documentation>Digitised from orthophoto - film: Geometri overført fra ortofoto ved hjelp av manuell registrering på et digitaliseringsbord. Bildemedium er film</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="42">
+        <annotation>
+          <documentation>Digitised from orthophoto - photocopy: Geometri overført fra ortofoto ved hjelp av manuell registrering på et digitaliseringsbord. Bildemedium er fotokopi</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="43">
+        <annotation>
+          <documentation>Digitised from aerial photo - mono-digitised from film: Geometri overført fra flybilde ved hjelp av manuell registrering på et digitaliseringsbord. Bildemedium er film</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="44">
+        <annotation>
+          <documentation>Digitised from aerial photo - mono-digitised from photocopy: Geometri overført fra flybilde ved hjelp av manuell registrering på et digitaliseringsbord. Bildemedium er fotokopi</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="45">
+        <annotation>
+          <documentation>Digitised from orthophoto: Geometri overført fra ortofoto ved hjelp av manuell registrering på skjerm</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="46">
+        <annotation>
+          <documentation>Digitised on screen from satellite photo: Geometri overført fra satellittbilde ved hjelp av manuell registrering på skjerm</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="47"/>
+      <enumeration value="48"/>
+      <enumeration value="49">
+        <annotation>
+          <documentation>Vektorisering fra laserdata, brukes også der vektoriseringen støttes av ortofoto</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="50">
+        <annotation>
+          <documentation>Digitised on dig.table from line-map: Geometri overført fra kart ved hjelp av manuell registrering på et digitaliseringsbord, medium uspesifisert</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="51">
+        <annotation>
+          <documentation>Digitised on dig.table from pencilled original: Geometri overført fra kart ved hjelp av manuell registrering på et digitaliseringsbord. Kartmedium er blyantoriginal</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="52">
+        <annotation>
+          <documentation>Digitised on dig.table from ??scribing folio: Geometri overført fra kart ved hjelp av manuell registrering på et digitaliseringsbord. Kartmedium er rissefolie</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="53">
+        <annotation>
+          <documentation>Digitised on dig.table from transparency film - good quality: Geometri overført fra kart ved hjelp av manuell registrering på et digitaliseringsbord. Kartmedium er transparent folie av god kvalitet, samkopi</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="54">
+        <annotation>
+          <documentation>Digitised on dig.table from transparency film - lower quality: Geometri overført fra kart ved hjelp av manuell registrering på et digitaliseringsbord. Kartmedium er transparent folie av mindre god kvalitet, samkopi</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="55">
+        <annotation>
+          <documentation>Digitised on dig.table from paper copy: Geometri overført fra kart ved hjelp av manuell registrering på et digitaliseringsbord. Kartmedium er papirkopi</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="56">
+        <annotation>
+          <documentation>Digitised on screen from scanned photographic combination: Geometri overført fra kart ved hjelp av manuell registrering på skjerm, medium skannet kart (raster), samkopi</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="60">
+        <annotation>
+          <documentation>Generated data (interpolation): Genererte data, interpolasjonsmetode. Ikke nærmere spesifisert</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="61">
+        <annotation>
+          <documentation>Generated in terrain model: Genererte data, interpolasjonsmetode, fra terrengmodell</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="62">
+        <annotation>
+          <documentation>Weighted mean: Genererte data, interpolasjonsmetode, vektet middel</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="63">
+        <annotation>
+          <documentation>Generated circular geometry: Genererte data: Sirkelgeometri, korridor eller annen geometri generert ut fra f.eks et punkt eller en linje (f.eks midtlinje veg)</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="64">
+        <annotation>
+          <documentation>Generalised: Genererte data: Generalisering</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="65">
+        <annotation>
+          <documentation>Generated central point: Genererte data: Sentralpunkt</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="66">
+        <annotation>
+          <documentation>Connection point/edge point: Genererte data: Sammenknytningspunkt (f.eks mellom ulike kartlegginger), randpunkt (f.eks mellom ulike kilder til kart)</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="67">
+        <annotation>
+          <documentation>Coordinates retrieved from GAB: Koordinater hentet fra GAB, forløperen til registerdelen av matrikkelen</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="68">
+        <annotation>
+          <documentation>Coordinates retrieved from JREG: Koordinater hentet fra JREG, jordregisteret</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="69">
+        <annotation>
+          <documentation>Calculated: Beregnet, uspesifisert hvordan</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="70">
+        <annotation>
+          <documentation>Special methods: Spesielle metoder, uspesifisert</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="71">
+        <annotation>
+          <documentation>Measured with range pole: Spesielle metoder: Målt med stikkstang</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="72">
+        <annotation>
+          <documentation>Measured with: Spesielle metoder: Målt med waterstang</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="73">
+        <annotation>
+          <documentation>Measured with measuring wheel: Spesielle metoder: Målt med målehjul</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="74">
+        <annotation>
+          <documentation>Measured with rate of climb indicator: Spesielle metoder: Målt med stigningsmåler</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="77">
+        <annotation>
+          <documentation>Punkt fastsatt ut fra et grunnlag (kart, bilde), f.eks ved partenes enighet ved en oppmålingsforretning</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="78">
+        <annotation>
+          <documentation>Stipulated by court decision or royal decree: Geometri fastsatt ved dom, lov, traktat eller kongelig resolusjon</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="79">
+        <annotation>
+          <documentation>????: Annet (spesifiseres i filhode)</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="80">
+        <annotation>
+          <documentation>Free-hand drawing: Digitalisert ut fra frihåndstegning.  Frihåndstegning er basert på svært grovt grunnlag eller ikke noe grunnlag</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="81">
+        <annotation>
+          <documentation>Digitised from sketching on map: Digitalisert fra krokering på kart, dvs grovt skissert på kart</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="82">
+        <annotation>
+          <documentation>Directly input on screen: Digitalisert ut fra frihåndstegning (direkte på skjerm). Frihåndstegning er basert på svært grovt grunnlag eller ikke noe grunnlag</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="90">
+        <annotation>
+          <documentation>Inertial ??positioning/localization: Treghetsstedfesting</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="91">
+        <annotation>
+          <documentation>GPS code measurement, relatively measurements: Innmålt med satellittbaserte systemer for navigasjon og posisjonering med global dekning (f.eks GPS, GLONASS, GALILEO): Kodemåling, relative målinger.</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="92">
+        <annotation>
+          <documentation>GPS code measurement, individual measurements: Innmålt med satellittbaserte systemer for navigasjon og posisjonering med global dekning (f.eks GPS, GLONASS, GALILEO): Kodemåling, enkle målinger.</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="93">
+        <annotation>
+          <documentation>GPS phase measurement, static measurement: Innmålt med satellittbaserte systemer for navigasjon og posisjonering med global dekning (f.eks GPS, GLONASS, GALILEO): Fasemåling statisk måling.</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="94">
+        <annotation>
+          <documentation>GPS phase measurement, other methods: Innmålt med satellittbaserte systemer for navigasjon og posisjonering med global dekning (f.eks GPS, GLONASS, GALILEO): Fasemåling andre metoder.</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="95">
+        <annotation>
+          <documentation>Combination of GPS/Inertia: Kombinasjon av GPS/Treghet</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="96">
+        <annotation>
+          <documentation>GPS phase measurement RTK: Innmålt med satellittbaserte systemer for navigasjon og posisjonering med global dekning (f.eks GPS, GLONASS, GALILEO).: Fasemåling RTK (realtids kinematisk måling)</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="97">
+        <annotation>
+          <documentation>GPS phase measurement, float solution: Innmålt med satellittbaserte systemer for navigasjon og posisjonering med global dekning (f.eks GPS, GLONASS, GALILEO). Fasemåling float-løsning</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="99">
+        <annotation>
+          <documentation>Unknown measurement method: Målemetode er ukjent</documentation>
+        </annotation>
+      </enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType name="MålemetodeOtherType">
+    <restriction base="string">
+      <pattern value="other: \w{2,}"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="MålemetodeHøydeType">
+    <annotation>
+      <documentation>metode for å måle objekttypens høydeverdi</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">H-MÅLEMETODE</taggedValue>
+      </appinfo>
+    </annotation>
+    <union memberTypes="app:MålemetodeHøydeEnumerationType app:MålemetodeHøydeOtherType"/>
+  </simpleType>
+  <simpleType name="MålemetodeHøydeEnumerationType">
+    <annotation>
+      <documentation>metode for å måle objekttypens høydeverdi</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">H-MÅLEMETODE</taggedValue>
+      </appinfo>
+    </annotation>
+    <restriction base="string">
+      <enumeration value="10"/>
+      <enumeration value="11"/>
+      <enumeration value="12"/>
+      <enumeration value="13"/>
+      <enumeration value="14"/>
+      <enumeration value="15"/>
+      <enumeration value="18"/>
+      <enumeration value="19"/>
+      <enumeration value="20"/>
+      <enumeration value="21"/>
+      <enumeration value="22"/>
+      <enumeration value="23"/>
+      <enumeration value="24"/>
+      <enumeration value="36"/>
+      <enumeration value="60"/>
+      <enumeration value="61"/>
+      <enumeration value="62"/>
+      <enumeration value="63"/>
+      <enumeration value="64"/>
+      <enumeration value="66"/>
+      <enumeration value="67"/>
+      <enumeration value="68"/>
+      <enumeration value="69"/>
+      <enumeration value="70"/>
+      <enumeration value="74"/>
+      <enumeration value="78"/>
+      <enumeration value="79"/>
+      <enumeration value="90"/>
+      <enumeration value="91"/>
+      <enumeration value="92"/>
+      <enumeration value="93"/>
+      <enumeration value="94"/>
+      <enumeration value="95"/>
+      <enumeration value="96"/>
+      <enumeration value="99"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="MålemetodeHøydeOtherType">
+    <restriction base="string">
+      <pattern value="other: \w{2,}"/>
+    </restriction>
+  </simpleType>
+  <element abstract="true" name="Nettverkskomponent" substitutionGroup="app:SOSI_Objekt2" type="app:NettverkskomponentType"/>
+  <complexType abstract="true" name="NettverkskomponentType">
+    <complexContent>
+      <extension base="app:SOSI_Objekt2Type">
+        <sequence>
+          <element minOccurs="0" name="nettverkstype" type="gml:CodeType">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LEDN_NETTVERKSTYPE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="fagområde" type="app:LedningsFagområdeType">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LEDN_FAGOMRÅDE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="drifter" type="string">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LEDN_DRIFTER</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="driftsmerking" type="string">
+            <annotation>
+              <documentation>unik ID for den fysiske nettverkskomponenten.
+
+Merknad: Vil kunne brukes til å knytte sammen informasjon om samme komponenten forvaltet i ulike databaser.</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">DRIFTSMERKING</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="driftssattår" type="integer">
+            <annotation>
+              <documentation>året nettverkskomponenten er satt i drift
+
+Merknad: Dette er i noen sammenhenger også kalt anleggsår.</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">DRIFTSSATTÅR</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="eier" type="string">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LEDN_EIER</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="høydereferanse" type="gml:CodeType">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LEDN_HØYDEREFERANSE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="identifikasjon" type="app:IdentifikasjonPropertyType">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">IDENT</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="produktbetegnelse" type="app:ProduktinformasjonPropertyType">
+            <annotation>
+              <documentation>produsentens betegnelse på komponenten</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">PRODUKTBETEGNELSE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="sikkerthetsgradering" type="gml:CodeType">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">SIKKERHETSGRADERING</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="status" type="gml:CodeType">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LEDNINGSTATUS</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="NettverkskomponentPropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:Nettverkskomponent"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element abstract="true" name="Nettverkstasjon" substitutionGroup="app:Framføringsnode" type="app:NettverkstasjonType">
+    <annotation>
+      <documentation>et fysisk, gjerne bygningsmessig, objekt som inneholder komponenter som gjør en eller annen behandling av vann, elektrisk strøm, signal eller annet som det nettverket den er en del av fører. Komponenter som gjør behandlingen kan f.eks. være pumper for vann, transformatorer for elektrisk strøm, forsterkere for signal osv</documentation>
+    </annotation>
+  </element>
+  <complexType abstract="true" name="NettverkstasjonType">
+    <complexContent>
+      <extension base="app:FramføringsnodeType">
+        <sequence>
+          <element minOccurs="0" name="nettverkstasjontype" type="gml:CodeType">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">NETTVERKSTASJONTYPE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="NettverkstasjonPropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:Nettverkstasjon"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="Posisjonskvalitet" substitutionGroup="gml:AbstractObject" type="app:PosisjonskvalitetType">
+    <annotation>
+      <documentation>beskrivelse av kvaliteten på stedfestingen</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">KVALITET</taggedValue>
+      </appinfo>
+    </annotation>
+  </element>
+  <complexType name="PosisjonskvalitetType">
+    <sequence>
+      <element name="målemetode" type="app:MålemetodeType">
+        <annotation>
+          <documentation>metode for måling i grunnriss (x,y), og høyde (z) når metoden er den samme som ved måling i grunnriss</documentation>
+          <appinfo>
+            <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">MÅLEMETODE</taggedValue>
+          </appinfo>
+        </annotation>
+      </element>
+      <element name="nøyaktighet" type="integer">
+        <annotation>
+          <documentation>punktstandardavviket i grunnriss for punkter samt tverravvik for linjer
+
+Merknad:
+Oppgitt i cm</documentation>
+          <appinfo>
+            <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">NØYAKTIGHET</taggedValue>
+          </appinfo>
+        </annotation>
+      </element>
+      <element name="synbarhet" type="app:SynbarhetType">
+        <annotation>
+          <documentation>hvor godt den kartlagte detalj var synbar ved kartleggingen</documentation>
+          <appinfo>
+            <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">SYNBARHET</taggedValue>
+          </appinfo>
+        </annotation>
+      </element>
+      <element name="målemetodeHøyde" type="app:MålemetodeHøydeType">
+        <annotation>
+          <documentation>metode for å måle høyden</documentation>
+          <appinfo>
+            <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">H-MÅLEMETODE</taggedValue>
+          </appinfo>
+        </annotation>
+      </element>
+      <element name="nøyaktighetHøyde" type="integer">
+        <annotation>
+          <documentation>nøyaktighet for høyden i cm</documentation>
+          <appinfo>
+            <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">H-NØYAKTIGHET</taggedValue>
+          </appinfo>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType name="PosisjonskvalitetPropertyType">
+    <sequence>
+      <element ref="app:Posisjonskvalitet"/>
+    </sequence>
+  </complexType>
+  <element name="Produktinformasjon" substitutionGroup="gml:AbstractObject" type="app:ProduktinformasjonType">
+    <annotation>
+      <documentation>Betegnelsen produktet har hos produsenten.
+
+Nyttig når det skal skaffes fram erstatning for "utslitt" komponent.</documentation>
+    </annotation>
+  </element>
+  <complexType name="ProduktinformasjonType">
+    <sequence>
+      <element minOccurs="0" name="produktkode" type="string">
+        <annotation>
+          <documentation>produsentens produktkode for produktet</documentation>
+          <appinfo>
+            <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">PRODUKTKODE</taggedValue>
+          </appinfo>
+        </annotation>
+      </element>
+      <element minOccurs="0" name="produktnavn" type="string">
+        <annotation>
+          <documentation>navnet produktet har hos produsenten</documentation>
+          <appinfo>
+            <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">PRODUKTNAVN</taggedValue>
+          </appinfo>
+        </annotation>
+      </element>
+      <element minOccurs="0" name="produsentnavn" type="string">
+        <annotation>
+          <documentation>navnet på produsenten av produktet</documentation>
+          <appinfo>
+            <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">PRODUSENTNAVN</taggedValue>
+          </appinfo>
+        </annotation>
+      </element>
+      <element minOccurs="0" name="produsertÅr" type="integer">
+        <annotation>
+          <documentation>året produktet ble produsert</documentation>
+          <appinfo>
+            <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">PRODUSERTÅR</taggedValue>
+          </appinfo>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType name="ProduktinformasjonPropertyType">
+    <sequence>
+      <element ref="app:Produktinformasjon"/>
+    </sequence>
+  </complexType>
+  <element name="Registreringsversjon" substitutionGroup="gml:AbstractObject" type="app:RegistreringsversjonType">
+    <annotation>
+      <documentation>angir hvilken versjon av registreringsinstruksen som ble benyttet ved datafangst
+
+Eksempel:
+I et datasett kan det finnes objekter som er etablert fra ulike registreringsversjoner. For eksempel har registreringsinstruksen for objekttypen Takkant i FKB blitt endret fra SOSI/FKB-versjon 3.4 til versjon 4.0. Dersom en kommune ønsker å ajourføre Takkant for et delområde av kommunen etter FKB/SOSI-versjon 4.0, vil han etter ajourføring ha et kommunedekkende datasett der Takkant er registrert med forskjellig registreringsinstruks. I disse tilfellene kan det være nyttig å kunne skille på objektnivå hvilken registreringsversjon som er benyttet ved datafangst. Egenskapen kan benyttes til dette.</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">REGISTRERINGSVERSJON</taggedValue>
+      </appinfo>
+    </annotation>
+  </element>
+  <complexType name="RegistreringsversjonType">
+    <sequence>
+      <element name="produkt" type="string">
+        <annotation>
+          <documentation>entydig navn på produktet i form av et kortnavn</documentation>
+          <appinfo>
+            <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">PRODUKT</taggedValue>
+          </appinfo>
+        </annotation>
+      </element>
+      <element name="versjon" type="string">
+        <annotation>
+          <documentation>versjonsnummer</documentation>
+          <appinfo>
+            <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">VERSJON</taggedValue>
+          </appinfo>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType name="RegistreringsversjonPropertyType">
+    <sequence>
+      <element ref="app:Registreringsversjon"/>
+    </sequence>
+  </complexType>
+  <element abstract="true" name="SOSI_Objekt" substitutionGroup="gml:AbstractFeature" type="app:SOSI_ObjektType">
+    <annotation>
+      <documentation>abstrakt objekt som bærer en rekke egenskaper som er fagområde-uavhengige og kan benyttes for alle objekttyper
+
+Merknad:
+Spesielt i produktspesifikasjonsarbeid vil en velge egenskaper og av grensningslinjer fra denne klassen.</documentation>
+    </annotation>
+  </element>
+  <complexType abstract="true" name="SOSI_ObjektType">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element minOccurs="0" name="identifikasjon" type="app:IdentifikasjonPropertyType">
+            <annotation>
+              <documentation>unik identifikasjon av et objekt</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">IDENT</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="datafangstdato" type="dateTime">
+            <annotation>
+              <documentation>dato når objektet siste gang ble registrert/observert/målt i terrenget
+
+Merknad: I mange tilfeller er denne forskjellig fra Oppdateringsdato, da registrerte endringer kan bufres i en kortere eller lengre periode før disse legges inn i databasen.
+Ved førstegangsregistrering settes Datafangstdato lik førsteDatafangstdato.</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">DATAFANGSTDATO</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="kvalitet" type="app:PosisjonskvalitetPropertyType">
+            <annotation>
+              <documentation>beskrivelse av kvaliteten på stedfestingen
+
+Merknad: Denne er identisk med ..KVALITET i tidligere versjoner av SOSI.</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">KVALITET</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="registreringsversjon" type="app:RegistreringsversjonPropertyType">
+            <annotation>
+              <documentation>angivelse av hvilken produktspesifikasjon som er utgangspunkt  for dataene</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">REGISTRERINGSVERSJON</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element maxOccurs="unbounded" minOccurs="0" name="bilde" type="string">
+            <annotation>
+              <documentation>referanse  til et informasjonselement, enten lokalt eller globalt</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">BILDE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element maxOccurs="unbounded" minOccurs="0" name="anmerkning" type="string">
+            <annotation>
+              <documentation>generell opplysning
+
+Merknad:
+mulighet til å legge inn utfyllende informasjon om objektet</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">ANMERKNING</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="SOSI_ObjektPropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:SOSI_Objekt"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element abstract="true" name="SOSI_Objekt2" substitutionGroup="gml:AbstractFeature" type="app:SOSI_Objekt2Type">
+    <annotation>
+      <documentation>abstrakt objekt som bærer en rekke egenskaper som er fagområde-uavhengige og kan benyttes for alle objekttyper
+
+Merknad:
+Spesielt i produktspesifikasjonsarbeid vil en velge egenskaper og av grensningslinjer fra denne klassen.</documentation>
+    </annotation>
+  </element>
+  <complexType abstract="true" name="SOSI_Objekt2Type">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element name="datafangstdato" type="dateTime">
+            <annotation>
+              <documentation>dato når objektet siste gang ble registrert/observert/målt i terrenget
+
+Merknad: I mange tilfeller er denne forskjellig fra Oppdateringsdato, da registrerte endringer kan bufres i en kortere eller lengre periode før disse legges inn i databasen.
+Ved førstegangsregistrering settes Datafangstdato lik førsteDatafangstdato.</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">DATAFANGSTDATO</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="kvalitet" type="app:PosisjonskvalitetPropertyType">
+            <annotation>
+              <documentation>beskrivelse av kvaliteten på stedfestingen
+
+Merknad: Denne er identisk med ..KVALITET i tidligere versjoner av SOSI.</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">KVALITET</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="registreringsversjon" type="app:RegistreringsversjonPropertyType">
+            <annotation>
+              <documentation>angivelse av hvilken produktspesifikasjon som er utgangspunkt  for dataene</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">REGISTRERINGSVERSJON</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element maxOccurs="unbounded" minOccurs="0" name="bilde" type="string">
+            <annotation>
+              <documentation>referanse  til et informasjonselement, enten lokalt eller globalt</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">BILDE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="anmerkning" type="string">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">ANMERKNING</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="SOSI_Objekt2PropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:SOSI_Objekt2"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element abstract="true" name="Skap" substitutionGroup="app:Framføringsnode" type="app:SkapType">
+    <annotation>
+      <documentation>beskyttelseskasse plassert vanligvis på bakken, som inneholder koblinger for elektrisk strøm, signal eller annet.
+
+Kan også være på størrelse med kiosk.
+
+
+INSPIRE Utility 2.9 Cabinet</documentation>
+    </annotation>
+  </element>
+  <complexType abstract="true" name="SkapType">
+    <complexContent>
+      <extension base="app:FramføringsnodeType">
+        <sequence>
+          <element name="bredde" type="double">
+            <annotation>
+              <documentation>bredden på skapet, enhet meter</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">BREDDE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="høyde" type="double">
+            <annotation>
+              <documentation>høyden på skapet, målt fra underkant til overkant på skapet, enhet meter</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">HØYDE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="lengde" type="double">
+            <annotation>
+              <documentation>lengden på skapet, enhet meter</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">LENGDE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="SkapPropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:Skap"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <simpleType name="SynbarhetType">
+    <annotation>
+      <documentation>hvor godt den kartlagte detalj var synbar ved kartleggingen</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">SYNBARHET</taggedValue>
+      </appinfo>
+    </annotation>
+    <union memberTypes="app:SynbarhetEnumerationType app:SynbarhetOtherType"/>
+  </simpleType>
+  <simpleType name="SynbarhetEnumerationType">
+    <annotation>
+      <documentation>hvor godt den kartlagte detalj var synbar ved kartleggingen</documentation>
+      <appinfo>
+        <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">SYNBARHET</taggedValue>
+      </appinfo>
+    </annotation>
+    <restriction base="string">
+      <enumeration value="0">
+        <annotation>
+          <documentation>Default</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="1">
+        <annotation>
+          <documentation>Forøvrig grei å innmåle. (Benyttes bl.a. for innmåling av ledninger på lukket grøft)</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="2">
+        <annotation>
+          <documentation>Middels synlig i flybilde/modell</documentation>
+        </annotation>
+      </enumeration>
+      <enumeration value="3">
+        <annotation>
+          <documentation>Dårlig/ikke synlig i flybilde/modell</documentation>
+        </annotation>
+      </enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType name="SynbarhetOtherType">
+    <restriction base="string">
+      <pattern value="other: \w{2,}"/>
+    </restriction>
+  </simpleType>
+  <element name="Takkant" substitutionGroup="app:Takriss" type="app:TakkantType">
+    <annotation>
+      <documentation>RoofEdge: the external delimitation of the roof surface of the building</documentation>
+    </annotation>
+  </element>
+  <complexType name="TakkantType">
+    <complexContent>
+      <extension base="app:TakrissType">
+        <sequence>
+          <element minOccurs="0" name="medium" type="gml:CodeType">
+            <annotation>
+              <documentation>medium: General mechanism to indicate whether an object is above the terrain (in the air), on the terrain, under the terrain, in water, etc.</documentation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">MEDIUM</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="treDNivå" type="gml:CodeType">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">TRE_D_NIVÅ</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="takskjegg" type="integer">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">TAKSKJEGG</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="TakkantPropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:Takkant"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element abstract="true" name="Takriss" substitutionGroup="app:Bygningsavgrensning" type="app:TakrissType">
+    <annotation>
+      <documentation>RoofOutline: the delimitation of the building by the roof edge, fictitious building delimitation and/or building dividing line</documentation>
+    </annotation>
+  </element>
+  <complexType abstract="true" name="TakrissType">
+    <complexContent>
+      <extension base="app:BygningsavgrensningType">
+        <sequence/>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="TakrissPropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:Takriss"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="Trase" substitutionGroup="app:Framføringsvei" type="app:TraseType">
+    <annotation>
+      <documentation>den mest mulig geografisk riktige posisjonen for en framføring av ledning(er). Traseen kan ligge på bakken, være en grøft, eller den kan beskrive ledninger over bakken (luftspenn)</documentation>
+    </annotation>
+  </element>
+  <complexType name="TraseType">
+    <complexContent>
+      <extension base="app:FramføringsveiType">
+        <sequence>
+          <element name="trasetype" type="gml:CodeType">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">TRASETYPE</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="ytreDiameter" type="double">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">YTREDIAMETER</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="trekkerørtype" type="gml:CodeType"/>
+          <element minOccurs="0" name="antallRør" type="integer">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">ANTALLRØR</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element maxOccurs="unbounded" minOccurs="0" name="inneholderKabel" type="app:InneholderKabelPropertyType">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">INNEHOLDERKABEL</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="material" type="gml:CodeType">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">KONSTRUKSJONSMATERIAL</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="antallTrekkerørIKanal" type="integer">
+            <annotation>
+              <appinfo>
+                <taggedValue xmlns="http://www.interactive-instruments.de/ShapeChange/AppInfo" tag="SOSI_navn">ANTALLTREKKERØRIKANAL</taggedValue>
+              </appinfo>
+            </annotation>
+          </element>
+          <element minOccurs="0" name="vertikalnivå" type="gml:CodeType"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="TrasePropertyType">
+    <sequence minOccurs="0">
+      <element ref="app:Trase"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+</schema>
