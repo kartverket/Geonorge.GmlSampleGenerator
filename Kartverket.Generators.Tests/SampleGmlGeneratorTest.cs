@@ -10,10 +10,13 @@ namespace Kartverket.Generators.Tests
         public void ShouldGenerateSampleGmlIdenticalToGiven()
         {
             XDocument referenceGml = XDocument.Load("Lufthavn_El.gml");
-            
-            XDocument xsd = XDocument.Load("lufthavn_el_2_0.xsd");
 
-            new SampleGmlGenerator().GenerateGml().Should().NotBeNull();
+            XDocument gmlDoc = new SampleGmlGenerator("lufthavn_el_2_0.xsd").GenerateGml();;
+
+            // Tmp. test:
+            gmlDoc.Should().NotBeNull();
+
+            // Final test: gmlDoc equals referenceGml
         }
     }
 }
