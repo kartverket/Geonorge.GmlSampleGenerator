@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Xml.Linq;
+using System.Linq;
 
 namespace Kartverket.Generators
 {
     public class SampleGmlGenerator
     {
 
+        private static XNamespace XSD_NAMESPACE = "http://www.w3.org/2001/XMLSchema"; // TODO: Get from xsdDoc? '.GetDefaultNamespace()'
         private static XNamespace GML_NAMESPACE = "http://www.opengis.net/gml/3.2"; // TODO: Get from xsdDoc?
         private static XNamespace XLINK_NAMESPACE = "http://www.w3.org/1999/xlink"; // TODO: Get from xsdDoc?
         private static XNamespace XSI_NAMESPACE = "http://www.w3.org/2001/XMLSchema-instance"; // TODO: Get from xsdDoc?
@@ -56,15 +59,48 @@ namespace Kartverket.Generators
             return gmlDoc;
         }
 
-        private object[] GenerateFeaturemembers()
+        private List<XElement> GenerateFeaturemembers()
         {
-            return new object[] 
-                {
-                    new XElement("featuremember-test_1"),
-                    new XElement("featuremember-test_2"),
-                    new XElement("featuremember-test_3")
-                };
+
+            List<XElement> featuremembers = new List<XElement>();
+
+            List<XElement> instantiableClasses = GetInstantiableClasses();
+
+            foreach (XElement instantiableClass in instantiableClasses)
+            {
+                XElement featuremember = GenerateFeaturemember(instantiableClass);
+                if (featuremember != null) featuremembers.Add(featuremember);
+            }
+
+            return featuremembers;
         }
+
+        private XElement GenerateFeaturemember(XElement instantiableClass)
+        {
+            if (instantiableClass.Attribute("name") != null)
+                return new XElement(instantiableClass.Attribute("name").Value);
+
+            return null;
+        }
+
+        private List<XElement> GetInstantiableClasses()
+        {
+            return (from cls in _xsdDoc.Element(GetXName("schema")).Elements(GetXName("element")) where !IsAbstract(cls) select cls).ToList();
+        }
+
+
+        private bool IsAbstract(XElement cls)
+        {
+            return (cls.Attribute("abstract") != null && cls.Attribute("abstract").Value.Equals("true")) ||
+                   (cls.Attribute("substitutionGroup") != null && cls.Attribute("substitutionGroup").Value.Equals("gml:AbstractObject"));
+        }
+
+
+        private XName GetXName(string elementName)
+        {
+            return XName.Get(elementName, XSD_NAMESPACE.NamespaceName);
+        }
+
 
         private object[] SetupNamespaces(string xmlns, string targetNamespace, string xsdDocument)
         {
@@ -104,6 +140,5 @@ namespace Kartverket.Generators
                       useSharedGeometry = true
                   };
         }
-
     }
 }
