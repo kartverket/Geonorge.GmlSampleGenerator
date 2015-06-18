@@ -56,12 +56,9 @@ namespace Kartverket.Generators
 
         private List<XElement> GenerateFeaturemembers()
         {
-
             List<XElement> featuremembers = new List<XElement>();
 
-            List<XElement> instantiableClasses = GetInstantiableClasses();
-
-            foreach (XElement instantiableClass in instantiableClasses)
+            foreach (XElement instantiableClass in GetInstantiableClasses())
             {
                 XElement featuremember = GenerateFeaturemember(instantiableClass);
                 if (featuremember != null) featuremembers.Add(featuremember);
@@ -73,9 +70,40 @@ namespace Kartverket.Generators
         private XElement GenerateFeaturemember(XElement instantiableClass)
         {
             if (instantiableClass.Attribute("name") != null)
-                return new XElement(instantiableClass.Attribute("name").Value);
+                return new XElement(_targetNamespace + instantiableClass.Attribute("name").Value, GenerateFeatureMemberFields(instantiableClass));
 
             return null;
+        }
+
+        private List<XElement> GenerateFeatureMemberFields(XElement instantiableClass)
+        {
+            List<XElement> featureMemberFields = new List<XElement>();
+
+            GenerateFeatureMemberFields(instantiableClass, featureMemberFields);
+
+            return featureMemberFields;
+        }
+
+        private List<XElement> GenerateFeatureMemberFields(XElement cls, List<XElement> featureMemberFields)
+        {
+            var clsFields = cls.Descendants(GetXName("element")).ToList();  // TODO: add _targetNamespace+
+
+            foreach (var field in clsFields)
+            {
+                if (field.Attribute("name") != null && !string.IsNullOrEmpty(field.Attribute("name").Value))
+                    featureMemberFields.Add(new XElement(_targetNamespace + field.Attribute("name").Value));
+
+                //  For each field, generate value...
+            }
+            if (cls.Attribute("type") != null)
+            {
+                XAttribute type = cls.Attribute("type");
+                string superClsName = type.Value.Substring(type.Value.IndexOf(":") + 1); // Kan også være en type som skal realiseres. Basecase...
+                XElement superCls = (from complexType in _xsdDoc.Element(GetXName("schema")).Elements(GetXName("complexType")) where complexType.Attribute("name") != null && complexType.Attribute("name").Value.Equals(superClsName) select complexType).FirstOrDefault();
+                GenerateFeatureMemberFields(superCls, featureMemberFields);
+            }
+
+            return featureMemberFields;
         }
 
         private List<XElement> GetInstantiableClasses()

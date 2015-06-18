@@ -177,6 +177,10 @@ namespace Kartverket.Generators
                     {
                         //Alt utført
                     }
+
+
+                        // Typene i xsd-"format": http://www.arkitektum.no/files/sosi/StandardMapEntries_sosi.xml
+
                     else if (att.Type.ToLower() == "integer")
                     {
                         Random rnd = new Random();
@@ -191,7 +195,7 @@ namespace Kartverket.Generators
 
                         addAttributes(f, att, verdi);
                     }
-                    else if (att.Type.ToLower() == "real")
+                    else if (att.Type.ToLower() == "real") // double
                     {
                         Random rnd = new Random();
                         double dbl = rnd.NextDouble();
@@ -212,11 +216,11 @@ namespace Kartverket.Generators
                         addAttributes(f, att, "true");
                     }
 
-                    else if (att.Type.ToLower() == "flate")
+                    else if (att.Type.ToLower() == "flate") // gml:SurfacePropertyType
                     {
                         addSurface(f, att);
                     }
-                    else if (att.Type.ToLower() == "punkt")
+                    else if (att.Type.ToLower() == "punkt") // gml:PointPropertyType
                     {
                         addPoint(f, att);
                     }
