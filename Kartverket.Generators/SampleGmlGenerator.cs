@@ -45,7 +45,9 @@ namespace Kartverket.Generators
 
             XElement featureCollection = new XElement(_xmlns_gml + "FeatureCollection", gmlIdAttribute, GenerateNamespaces());
 
-            XElement featureMembers = new XElement(_xmlns_gml + "featureMembers", GenerateFeaturemembers());
+            XElement featureMembers = new XElement(_xmlns_gml + "featureMembers");
+
+            GenerateFeatureData(featureMembers, GetBaseClasses());
 
             featureCollection.Add(featureMembers);
 
@@ -54,76 +56,117 @@ namespace Kartverket.Generators
             return gmlDoc;
         }
 
-        private List<XElement> GenerateFeaturemembers()
+        private void GenerateFeatureData(XElement gmlDataContainer, XElement xsdPropertyContainer)
         {
-            List<XElement> featuremembers = new List<XElement>();
+            if (xsdPropertyContainer == null) return;
 
-            foreach (XElement instantiableClass in GetInstantiableClasses())
+            if (IsExtension(xsdPropertyContainer))
+                GenerateFeatureData(gmlDataContainer, GetElementByAttribute(xsdPropertyContainer.Element(GetXName("complexContent")).Element(GetXName("extension")).Attribute("base")));
+
+            foreach (XElement xsdPropertyElm in xsdPropertyContainer.Descendants(GetXName("element")))
+                GeneratePropertyData(gmlDataContainer, xsdPropertyElm);
+        }
+
+        private void GeneratePropertyData(XElement gmlDataContainer, XElement xsdPropertyElm)
+        {
+            if (xsdPropertyElm == null) return;
+
+            if (IsRefferer(xsdPropertyElm))
+                GeneratePropertyData(gmlDataContainer, GetElementByAttribute(xsdPropertyElm.Attribute("ref")));
+
+            else if (IsRealizable(xsdPropertyElm))
             {
-                XElement featuremember = GenerateFeaturemember(instantiableClass);
-                if (featuremember != null) featuremembers.Add(featuremember);
+                XElement gmlDataElm = new XElement(_targetNamespace + xsdPropertyElm.Attribute("name").Value); // TODO: Improvement - Create factory method for gmlElements?
+
+                gmlDataContainer.Add(gmlDataElm);
+
+                if (IsAssignable(xsdPropertyElm))
+                    AssignSampleValue(gmlDataElm, xsdPropertyElm);
+
+                else
+                    GenerateFeatureData(gmlDataElm, GetElementByAttribute(xsdPropertyElm.Attribute("type")));
             }
-
-            return featuremembers;
         }
 
-        private XElement GenerateFeaturemember(XElement instantiableClass)
+        private bool IsAssignable(XElement xsdPropertyElm)
         {
-            if (instantiableClass.Attribute("name") != null)
-                return new XElement(_targetNamespace + instantiableClass.Attribute("name").Value, GenerateFeatureMemberFields(instantiableClass));
-
-            return null;
+            return false; // TODO: Check for assignable type
         }
 
-        private List<XElement> GenerateFeatureMemberFields(XElement instantiableClass)
+        private bool IsExtension(XElement xsdPropertyContainer)
         {
-            List<XElement> featureMemberFields = new List<XElement>();
-
-            GenerateFeatureMemberFields(instantiableClass, featureMemberFields);
-
-            return featureMemberFields;
+            XElement complexContentElement = xsdPropertyContainer.Element(GetXName("complexContent"));
+            XElement extensionElement = complexContentElement != null ? complexContentElement.Element(GetXName("extension")) : null;
+            return extensionElement != null && HasAttributeDefined("base", extensionElement);
         }
 
-        private List<XElement> GenerateFeatureMemberFields(XElement cls, List<XElement> featureMemberFields)
+        private XElement GetBaseClasses()
         {
-            var clsFields = cls.Descendants(GetXName("element")).ToList();  // TODO: add _targetNamespace+
+            object[] baseClasses = (from classElm in _xsdDoc.Element(GetXName("schema")).Elements()
+                                where IsRealizable(classElm)
+                                    && !(HasAttributeDefined("substitutionGroup", classElm) && classElm.Attribute("substitutionGroup").Value.Equals("gml:AbstractObject"))
+                                select classElm).ToArray();
 
-            foreach (var field in clsFields)
-            {
-                if (field.Attribute("name") != null && !string.IsNullOrEmpty(field.Attribute("name").Value))
-                    featureMemberFields.Add(new XElement(_targetNamespace + field.Attribute("name").Value));
-
-                //  For each field, generate value...
-            }
-            if (cls.Attribute("type") != null)
-            {
-                XAttribute type = cls.Attribute("type");
-                string superClsName = type.Value.Substring(type.Value.IndexOf(":") + 1); // Kan også være en type som skal realiseres. Basecase...
-                XElement superCls = (from complexType in _xsdDoc.Element(GetXName("schema")).Elements(GetXName("complexType")) where complexType.Attribute("name") != null && complexType.Attribute("name").Value.Equals(superClsName) select complexType).FirstOrDefault();
-                GenerateFeatureMemberFields(superCls, featureMemberFields);
-            }
-
-            return featureMemberFields;
+            return new XElement("BaseClasses", baseClasses);
         }
+        
+        // TODO: Improvement - Create [ bool HasAttributeDefinasAs(XElement element, string attrName, string attrValue) ]
 
-        private List<XElement> GetInstantiableClasses()
+        private bool IsRefferer(XElement xsdElement)
         {
-            return (from cls in _xsdDoc.Element(GetXName("schema")).Elements(GetXName("element")) where !IsAbstract(cls) select cls).ToList();
+            return HasAttributeDefined("ref", xsdElement);
         }
 
-
-        private bool IsAbstract(XElement cls)
+        private bool IsRealizable(XElement xsdElement)
         {
-            return (cls.Attribute("abstract") != null && cls.Attribute("abstract").Value.Equals("true")) ||
-                   (cls.Attribute("substitutionGroup") != null && cls.Attribute("substitutionGroup").Value.Equals("gml:AbstractObject"));
+            return IsTag("element", xsdElement)
+                   && HasAttributeDefined("name", xsdElement)
+                   && HasAttributeDefined("type", xsdElement)
+                   && !IsAbstract(xsdElement);
         }
 
+        private void AssignSampleValue(XElement gmlElement, XElement typeDescriptorElm)
+        {
+            string type = HasAttributeDefined("type", typeDescriptorElm) ? typeDescriptorElm.Attribute("type").Value : "noType";
+            gmlElement.Add(WithoutNSPrefix(type)); // TODO: Generate and assign relevant data based on propertyDefinitionElm type
+        }
+
+        private bool IsTag(string tagName, XElement xsdElement)
+        {
+            return xsdElement.Name.LocalName == tagName;
+        }
+
+        private bool HasAttributeDefined(string attrName, XElement element)
+        {
+            return element.Attribute(attrName) != null && !string.IsNullOrEmpty(element.Attribute(attrName).Value);
+        }
+
+        private bool IsAbstract(XElement xsdClass)
+        {
+            return (xsdClass.Attribute("abstract") != null && xsdClass.Attribute("abstract").Value.Equals("true"));
+        }
+
+        private XElement GetElementByAttribute(XAttribute attribute)
+        {
+            return (attribute != null) ? GetElementByName(WithoutNSPrefix(attribute.Value)) : null;
+        }
+
+        private string WithoutNSPrefix(string prefixedValue)
+        {
+            return prefixedValue.Substring(prefixedValue.IndexOf(":") + 1);
+        }
+
+        private XElement GetElementByName(string elementName)
+        {
+            return (from element in _xsdDoc.Element(GetXName("schema")).Elements()
+                    where element.Attribute("name") != null && element.Attribute("name").Value.Equals(elementName)
+                    select element).FirstOrDefault();
+        }
 
         private XName GetXName(string elementName)
         {
             return XName.Get(elementName, _xmlns_xsd.NamespaceName);
         }
-
 
         private object[] GenerateNamespaces()
         {
