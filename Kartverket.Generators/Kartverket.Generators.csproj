@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GmlSettings.cs" />
+    <Compile Include="SampleDataGenerator.cs" />
     <Compile Include="SampleGmlGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

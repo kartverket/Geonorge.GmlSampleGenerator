@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="SampleGmlGeneratorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SampleDataGeneratorTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Lufthavn_El.gml">
