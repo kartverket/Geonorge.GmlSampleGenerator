@@ -88,11 +88,6 @@ namespace Kartverket.Generators
             }
         }
 
-        private bool IsAssignable(XElement xsdPropertyElm)
-        {
-            return false; // TODO: Check for assignable type
-        }
-
         private bool IsExtension(XElement xsdPropertyContainer)
         {
             XElement complexContentElement = xsdPropertyContainer.Element(GetXName("complexContent"));
@@ -125,10 +120,17 @@ namespace Kartverket.Generators
                    && !IsAbstract(xsdElement);
         }
 
-        private void AssignSampleValue(XElement gmlElement, XElement typeDescriptorElm)
+        private bool IsAssignable(XElement xsdPropertyElm)
         {
-            string type = HasAttributeDefined("type", typeDescriptorElm) ? typeDescriptorElm.Attribute("type").Value : "noType";
-            gmlElement.Add(WithoutNSPrefix(type)); // TODO: Generate and assign relevant data based on propertyDefinitionElm type
+            string type = xsdPropertyElm.Attribute("type").Value;
+            return SampleDataGenerator.SupportsType(type);
+        }
+
+        private void AssignSampleValue(XElement gmlElement, XElement xsdPropertyElm)
+        {
+            string type = xsdPropertyElm.Attribute("type").Value;
+            object sampledata = SampleDataGenerator.GenerateForType(type);
+            gmlElement.Add(sampledata);
         }
 
         private bool IsTag(string tagName, XElement xsdElement)
