@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Xml.Linq;
 using System.Linq;
+using System.IO;
 
 namespace Kartverket.Generators
 {
@@ -19,26 +20,26 @@ namespace Kartverket.Generators
 
         private SampleGmlDataGenerator _sampleDataGenerator;
 
-        public SampleGmlGenerator(string xsdFilename)
+        public SampleGmlGenerator(Stream xsdStream, string xsdFilename)
         {
             GmlSettings defaultGmlSettings = new GmlSettings();
-            Initialize(xsdFilename, defaultGmlSettings);
+            Initialize(xsdStream, xsdFilename, defaultGmlSettings);
         }
 
-        public SampleGmlGenerator(string xsdFilename, GmlSettings gmlSettings)
+        public SampleGmlGenerator(Stream xsdStream, string xsdFilename, GmlSettings gmlSettings)
         {
-            Initialize(xsdFilename, gmlSettings);
+            Initialize(xsdStream, xsdFilename, gmlSettings);
         }
 
-        private void Initialize(string xsdFilename, GmlSettings gmlSettings)
+        private void Initialize(Stream xsdStream, string xsdFilename, GmlSettings gmlSettings)
         {
+            _xsdDoc = XDocument.Load(xsdStream);
             _xsdFilename = xsdFilename;
-            _xsdDoc = XDocument.Load(xsdFilename);
             _targetNamespace = _xsdDoc.Element(GetXName("schema")).Attribute("targetNamespace").Value;
             _sampleDataGenerator = new SampleGmlDataGenerator(gmlSettings, _targetNamespace, _xmlns_gml);
         }
 
-        public XDocument GenerateGml()
+        public MemoryStream GenerateGml()
         {
             XDocument gmlDoc = new XDocument();
 
@@ -54,7 +55,11 @@ namespace Kartverket.Generators
 
             gmlDoc.Add(featureCollection);
 
-            return gmlDoc;
+            MemoryStream gmlStream = new MemoryStream();
+
+            gmlDoc.Save(gmlStream);
+
+            return gmlStream;
         }
 
         private void GenerateFeatureData(XElement gmlDataContainer, XElement xsdPropertyContainer)
