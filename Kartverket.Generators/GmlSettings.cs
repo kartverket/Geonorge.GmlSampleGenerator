@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace Kartverket.Generators
 {
     public class GmlSettings
     {
-        public bool use2DGeometry;
-        public bool useRandomCoords;
-        public bool skipSchemalocation;
-        public bool useSharedGeometry;
+        public bool Use3DGeometry { get; set; }
+
+        public bool UseRandomCoords { get; set; }
+
+        public bool SkipSchemalocation { get; set; }
+
+        public bool UseSharedGeometry { get; set; }
     }
 }

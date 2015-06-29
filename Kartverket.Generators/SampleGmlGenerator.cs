@@ -17,11 +17,12 @@ namespace Kartverket.Generators
         private XNamespace _xmlns_xsi = "http://www.w3.org/2001/XMLSchema-instance";
         private XNamespace _targetNamespace;
 
-        private GmlSettings _gmlSettings;
+        private SampleGmlDataGenerator _sampleDataGenerator;
 
         public SampleGmlGenerator(string xsdFilename)
         {
-            Initialize(xsdFilename, GetDefaultGmlSettings());
+            GmlSettings defaultGmlSettings = new GmlSettings();
+            Initialize(xsdFilename, defaultGmlSettings);
         }
 
         public SampleGmlGenerator(string xsdFilename, GmlSettings gmlSettings)
@@ -33,8 +34,8 @@ namespace Kartverket.Generators
         {
             _xsdFilename = xsdFilename;
             _xsdDoc = XDocument.Load(xsdFilename);
-            _gmlSettings = gmlSettings;
             _targetNamespace = _xsdDoc.Element(GetXName("schema")).Attribute("targetNamespace").Value;
+            _sampleDataGenerator = new SampleGmlDataGenerator(gmlSettings, _targetNamespace, _xmlns_gml);
         }
 
         public XDocument GenerateGml()
@@ -78,7 +79,7 @@ namespace Kartverket.Generators
             {
                 XElement gmlDataElm = new XElement(_targetNamespace + xsdPropertyElm.Attribute("name").Value); // TODO: Improvement - Create factory method for gmlElements?
 
-                gmlDataContainer.Add(gmlDataElm);
+                gmlDataContainer.Add(gmlDataElm); // TODO: Add multiple instances if property describes 0/1..many
 
                 if (IsAssignable(xsdPropertyElm))
                     AssignSampleValue(gmlDataElm, xsdPropertyElm);
@@ -123,13 +124,13 @@ namespace Kartverket.Generators
         private bool IsAssignable(XElement xsdPropertyElm)
         {
             string type = xsdPropertyElm.Attribute("type").Value;
-            return SampleDataGenerator.SupportsType(type);
+            return _sampleDataGenerator.SupportsType(type);
         }
 
         private void AssignSampleValue(XElement gmlElement, XElement xsdPropertyElm)
         {
             string type = xsdPropertyElm.Attribute("type").Value;
-            object sampledata = SampleDataGenerator.GenerateForType(type);
+            object sampledata = _sampleDataGenerator.GenerateForType(type);
             gmlElement.Add(sampledata);
         }
 
@@ -183,17 +184,6 @@ namespace Kartverket.Generators
                     new XAttribute(XNamespace.Xmlns + "xsi", _xmlns_xsi),
                     new XAttribute(_xmlns_xsi + "schemaLocation", "" + _targetNamespace + " " + _targetNamespace + "/" + _xsdFilename)
                 };
-        }
-
-        private GmlSettings GetDefaultGmlSettings()
-        {
-            return new GmlSettings()
-                  {
-                      use2DGeometry = true,
-                      useRandomCoords = true,
-                      skipSchemalocation = true,
-                      useSharedGeometry = true
-                  };
         }
     }
 }

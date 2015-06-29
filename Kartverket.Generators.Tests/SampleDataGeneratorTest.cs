@@ -10,23 +10,26 @@ namespace Kartverket.Generators.Tests
         [Test]
         public void ShouldDeterminWhetherTypeIsSupported()
         {
-            SampleDataGenerator.SupportsType("string").Should().BeTrue();
-            SampleDataGenerator.SupportsType("noType").Should().BeFalse();
+            SampleDataGenerator dataGenerator = new SampleDataGenerator();
+            dataGenerator.SupportsType("string").Should().BeTrue();
+            dataGenerator.SupportsType("noType").Should().BeFalse();
         }
         
         [Test]
         public void ShouldGenerateDataAccordingToGivenTypes()
         {
-            string stringData = (string) SampleDataGenerator.GenerateForType("string");
+            SampleDataGenerator dataGenerator = new SampleDataGenerator();
+
+            string stringData = (string)dataGenerator.GenerateForType("string");
             stringData.GetType().Should().Be(typeof(string));
 
-            int intData = (int) SampleDataGenerator.GenerateForType("integer");
+            int intData = (int)dataGenerator.GenerateForType("integer");
             intData.GetType().Should().Be(typeof(int));
 
-            double doubleData = (double) SampleDataGenerator.GenerateForType("double");
+            double doubleData = (double)dataGenerator.GenerateForType("double");
             doubleData.GetType().Should().Be(typeof(double));
 
-            DateTime dateTimeData = (DateTime) SampleDataGenerator.GenerateForType("dateTime");
+            DateTime dateTimeData = (DateTime)dataGenerator.GenerateForType("dateTime");
             dateTimeData.GetType().Should().Be(typeof(DateTime));
         }
     }

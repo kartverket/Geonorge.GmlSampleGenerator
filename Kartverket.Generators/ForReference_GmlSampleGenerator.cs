@@ -224,11 +224,11 @@ namespace Kartverket.Generators
                     {
                         addPoint(f, att);
                     }
-                    else if (att.Type.ToLower() == "sverm")
+                    else if (att.Type.ToLower() == "sverm") // gml:MultiPointPropertyType
                     {
                         addPointCloud(f, att);
                     }
-                    else if (att.Type.ToLower() == "kurve")
+                    else if (att.Type.ToLower() == "kurve") // gml:CurvePropertyType
                     {
                         addCurve(f, att);
                     }
