@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Kartverket.Generators;
+using System.IO;
 using System.Web;
 using System.Web.Mvc;
 
@@ -19,15 +20,19 @@ namespace Kartverket.GmlSampleGenerator.Controllers
         }
 
         [HttpPost]
-        public ActionResult GmlFromXsd(HttpPostedFileBase xsdfile)
+        public FileContentResult GmlFromXsd(HttpPostedFileBase xsdfile)
         {
             if (xsdfile != null && xsdfile.ContentLength > 0)
             {
                 var xsdFilename = Path.GetFileName(xsdfile.FileName);
-                // Process stream
+                Stream xsdStream = xsdfile.InputStream;
+                SampleGmlGenerator splGmlGen = new SampleGmlGenerator(xsdStream, xsdFilename);
+
+                MemoryStream gmlStream = splGmlGen.GenerateGml();
+                return File(gmlStream.ToArray(), "text/xml", "GeneratedFromXsd");
             }
 
-            return RedirectToAction("GmlFromXsd");
+            return null;
         }
     }
 }
