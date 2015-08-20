@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kartverket.GmlSampleGenerator", "Kartverket.GmlSampleGenerator\Kartverket.GmlSampleGenerator.csproj", "{34DBECA5-B19F-4B2A-AB30-7BC273CEEE27}"
 EndProject
@@ -12,21 +12,35 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Dev|Any CPU = Dev|Any CPU
 		Release|Any CPU = Release|Any CPU
+		Test|Any CPU = Test|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{34DBECA5-B19F-4B2A-AB30-7BC273CEEE27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{34DBECA5-B19F-4B2A-AB30-7BC273CEEE27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34DBECA5-B19F-4B2A-AB30-7BC273CEEE27}.Dev|Any CPU.ActiveCfg = Dev|Any CPU
+		{34DBECA5-B19F-4B2A-AB30-7BC273CEEE27}.Dev|Any CPU.Build.0 = Dev|Any CPU
 		{34DBECA5-B19F-4B2A-AB30-7BC273CEEE27}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34DBECA5-B19F-4B2A-AB30-7BC273CEEE27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34DBECA5-B19F-4B2A-AB30-7BC273CEEE27}.Test|Any CPU.ActiveCfg = Test|Any CPU
+		{34DBECA5-B19F-4B2A-AB30-7BC273CEEE27}.Test|Any CPU.Build.0 = Test|Any CPU
 		{DCFB11A2-9E74-403F-90E9-EC07F53AA164}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DCFB11A2-9E74-403F-90E9-EC07F53AA164}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCFB11A2-9E74-403F-90E9-EC07F53AA164}.Dev|Any CPU.ActiveCfg = Dev|Any CPU
+		{DCFB11A2-9E74-403F-90E9-EC07F53AA164}.Dev|Any CPU.Build.0 = Dev|Any CPU
 		{DCFB11A2-9E74-403F-90E9-EC07F53AA164}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DCFB11A2-9E74-403F-90E9-EC07F53AA164}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCFB11A2-9E74-403F-90E9-EC07F53AA164}.Test|Any CPU.ActiveCfg = Test|Any CPU
+		{DCFB11A2-9E74-403F-90E9-EC07F53AA164}.Test|Any CPU.Build.0 = Test|Any CPU
 		{EC7DEB03-BE86-43F1-9431-575CD78E326C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EC7DEB03-BE86-43F1-9431-575CD78E326C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC7DEB03-BE86-43F1-9431-575CD78E326C}.Dev|Any CPU.ActiveCfg = Dev|Any CPU
+		{EC7DEB03-BE86-43F1-9431-575CD78E326C}.Dev|Any CPU.Build.0 = Dev|Any CPU
 		{EC7DEB03-BE86-43F1-9431-575CD78E326C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC7DEB03-BE86-43F1-9431-575CD78E326C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC7DEB03-BE86-43F1-9431-575CD78E326C}.Test|Any CPU.ActiveCfg = Test|Any CPU
+		{EC7DEB03-BE86-43F1-9431-575CD78E326C}.Test|Any CPU.Build.0 = Test|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
