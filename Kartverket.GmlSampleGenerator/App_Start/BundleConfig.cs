@@ -24,8 +24,12 @@ namespace Kartverket.GmlSampleGenerator
                       "~/Scripts/respond.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                     "~/Content/bootstrap.css",
+                     "~/Content/common.css",
+                     "~/Content/navbar.css",
+                     "~/Content/searchbar.css",
+                     "~/Content/custom.css",
+                     "~/Content/site.css"));
 
             // Set EnableOptimizations to false for debugging. For more information,
             // visit http://go.microsoft.com/fwlink/?LinkId=301862
