@@ -7,37 +7,42 @@
 
 @using (Html.BeginForm("GmlFromXsdUrl", "Generate", FormMethod.Post))
 {
-    <b>URL til XSD</b>
+    <label>URL til XSD</label>
     <div class="row">
-        <div class="col-lg-4">
-            <div class="input-group">
-                <input type="text" name="urlToXsd" class="form-control" size="40" placeholder="http://...">
+        <div class="col-md-4 ">
+            <div class="form-group">
+                <input type="text" name="urlToXsd" class="form-control" placeholder="http://...">
             </div>
         </div>
-        <div class="col-lg-8">
-            <input type="submit" value="Generer GML" class="btn btn-primary" />
+        <div class="col-md-6">
+            <div class="form-group">
+                <input type="submit" value="Generer GML" class="btn btn-primary" />
+            </div>
         </div>
     </div>
 }
 
-<br />
-
 @using (Html.BeginForm("GmlFromXsdFile", "Generate", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-    <b>Lokal XSD-fil</b>
+    <label>Lokal XSD-fil</label>
     <div class="row">
-        <div class="col-lg-4">
-            <div class="input-group">
-                <span class="input-group-btn">
-                    <span class="btn btn-primary btn-file">
-                        Velg fil @Html.TextBox("xsdfile", null, new { type = "file" })
+        <div class="col-md-4">
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <span class="btn btn-primary btn-file">
+                            Velg fil @Html.TextBox("xsdfile", null, new { type = "file" })
+                        </span>
                     </span>
-                </span>
-                <input type="text" class="form-control" readonly>
+                    <input type="text" class="form-control" readonly>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="col-lg-8">
-            <input type="submit" value="Generer GML" class="btn btn-primary" />
+        <div class="col-md-6">
+            <div class="form-group">
+
+                <input type="submit" value="Generer GML" class="btn btn-primary" />
+            </div>
         </div>
     </div>
 }
