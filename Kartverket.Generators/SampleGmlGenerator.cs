@@ -20,6 +20,10 @@ namespace Kartverket.Generators
 
         private SampleGmlDataGenerator _sampleDataGenerator;
 
+        private Dictionary<XName, int> _frequencyRestrictedTypes;
+        private const int MAX_INSTANCES_RESTRICTED_TYPES = 5;
+
+
         public SampleGmlGenerator(Stream xsdStream, string xsdFilename)
         {
             GmlSettings defaultGmlSettings = new GmlSettings();
@@ -37,6 +41,7 @@ namespace Kartverket.Generators
             _xsdFilename = xsdFilename;
             _targetNamespace = _xsdDoc.Element(GetXName("schema")).Attribute("targetNamespace").Value;
             _sampleDataGenerator = new SampleGmlDataGenerator(gmlSettings, _targetNamespace, _xmlns_gml);
+            _frequencyRestrictedTypes = new Dictionary<XName, int>();
         }
 
         public MemoryStream GenerateGml()
@@ -67,10 +72,20 @@ namespace Kartverket.Generators
             if (xsdPropertyContainer == null) return;
 
             if (IsExtension(xsdPropertyContainer))
-                GenerateFeatureData(gmlDataContainer, GetElementByAttribute(xsdPropertyContainer.Element(GetXName("complexContent")).Element(GetXName("extension")).Attribute("base")));
+            {
+                XAttribute baseAttr = xsdPropertyContainer
+                                          .Element(GetXName("complexContent"))
+                                              .Element(GetXName("extension"))
+                                                  .Attribute("base");
+
+                XElement baseContainer = GetElementByAttribute(baseAttr);
+                GenerateFeatureData(gmlDataContainer, baseContainer);
+            }
 
             foreach (XElement xsdPropertyElm in xsdPropertyContainer.Descendants(GetXName("element")))
+            {
                 GeneratePropertyData(gmlDataContainer, xsdPropertyElm);
+            }
         }
 
         private void GeneratePropertyData(XElement gmlDataContainer, XElement xsdPropertyElm)
@@ -78,20 +93,53 @@ namespace Kartverket.Generators
             if (xsdPropertyElm == null) return;
 
             if (IsRefferer(xsdPropertyElm))
-                GeneratePropertyData(gmlDataContainer, GetElementByAttribute(xsdPropertyElm.Attribute("ref")));
-
+            {
+                XAttribute refAttr = xsdPropertyElm.Attribute("ref");
+                GeneratePropertyData(gmlDataContainer, GetElementByAttribute(refAttr));
+            }
             else if (IsRealizable(xsdPropertyElm))
             {
+                if (HasInstanceRestriction(xsdPropertyElm))
+                {
+                    TrackFrequency(xsdPropertyElm);
+
+                    if (InstanceRestrictionIsExceeded(xsdPropertyElm)) return;
+                }
+
                 XElement gmlDataElm = new XElement(_targetNamespace + xsdPropertyElm.Attribute("name").Value); // TODO: Improvement - Create factory method for gmlElements?
 
                 gmlDataContainer.Add(gmlDataElm); // TODO: Add multiple instances if property describes 0/1..many
 
                 if (IsAssignable(xsdPropertyElm))
                     AssignSampleValue(gmlDataElm, xsdPropertyElm);
-
                 else
-                    GenerateFeatureData(gmlDataElm, GetElementByAttribute(xsdPropertyElm.Attribute("type")));
+                {
+                    XAttribute typeAttr = xsdPropertyElm.Attribute("type");
+                    GenerateFeatureData(gmlDataElm, GetElementByAttribute(typeAttr));
+                }
             }
+        }
+
+        private bool HasInstanceRestriction(XElement xsdPropertyElm)
+        {
+            // All other than assignable types has instance restriction
+            return !IsAssignable(xsdPropertyElm);
+        }
+
+        private void TrackFrequency(XElement xsdPropertyElm)
+        {
+            string typeName = xsdPropertyElm.Attribute("name").Value;
+
+            if (_frequencyRestrictedTypes.ContainsKey(typeName))
+                _frequencyRestrictedTypes[typeName]++;
+            else
+                _frequencyRestrictedTypes[typeName] = 1;
+        }
+
+        private bool InstanceRestrictionIsExceeded(XElement xsdPropertyElm)
+        {
+            string typeName = xsdPropertyElm.Attribute("name").Value;
+            return _frequencyRestrictedTypes[typeName] > MAX_INSTANCES_RESTRICTED_TYPES;
         }
 
         private bool IsExtension(XElement xsdPropertyContainer)
