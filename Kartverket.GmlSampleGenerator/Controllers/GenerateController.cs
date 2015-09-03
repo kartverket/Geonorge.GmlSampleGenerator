@@ -24,9 +24,10 @@ namespace Kartverket.GmlSampleGenerator.Controllers
         [HttpPost]
         public FileContentResult GmlFromXsdUrl(string urlToXsd)
         {
-            if (!string.IsNullOrEmpty(urlToXsd))
+            if (!string.IsNullOrEmpty(urlToXsd)) // TODO: Validate url
             {
                 var httpRequest = (HttpWebRequest)WebRequest.Create(urlToXsd);
+                
                 var response = (HttpWebResponse)httpRequest.GetResponse();
                 Stream xsdStream = response.GetResponseStream();
 
