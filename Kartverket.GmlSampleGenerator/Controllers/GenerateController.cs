@@ -26,17 +26,10 @@ namespace Kartverket.GmlSampleGenerator.Controllers
         {
             if (!string.IsNullOrEmpty(urlToXsd)) // TODO: Validate url
             {
-                var httpRequest = (HttpWebRequest)WebRequest.Create(urlToXsd);
-                
-                var response = (HttpWebResponse)httpRequest.GetResponse();
-                Stream xsdStream = response.GetResponseStream();
-
+                Stream xsdStream = WebRequest.Create(urlToXsd).GetResponse().GetResponseStream();
                 string xsdFilename = urlToXsd.Split('/').Last();
 
-                SampleGmlGenerator splGmlGen = new SampleGmlGenerator(xsdStream, xsdFilename);
-
-                MemoryStream gmlStream = splGmlGen.GenerateGml();
-                return File(gmlStream.ToArray(), "text/xml", "GeneratedFromXsd");
+                return GmlFileFromXsdStream(xsdStream, xsdFilename);
             }
 
             return null;
@@ -47,15 +40,21 @@ namespace Kartverket.GmlSampleGenerator.Controllers
         {
             if (xsdfile != null && xsdfile.ContentLength > 0)
             {
-                var xsdFilename = Path.GetFileName(xsdfile.FileName);
                 Stream xsdStream = xsdfile.InputStream;
-                SampleGmlGenerator splGmlGen = new SampleGmlGenerator(xsdStream, xsdFilename);
+                string xsdFileName = Path.GetFileName(xsdfile.FileName);
 
-                MemoryStream gmlStream = splGmlGen.GenerateGml();
-                return File(gmlStream.ToArray(), "text/xml", "GeneratedFromXsd");
+                return GmlFileFromXsdStream(xsdStream, xsdFileName);
             }
 
             return null;
+        }
+
+        private FileContentResult GmlFileFromXsdStream(Stream xsdStream, string xsdFilename)
+        {
+            MemoryStream gmlStream = new SampleGmlGenerator(xsdStream, xsdFilename).GenerateGml();
+            string gmlFileName = "generatedFromXsd_" + Path.GetFileNameWithoutExtension(xsdFilename);
+
+            return File(gmlStream.ToArray(), "text/xml", gmlFileName);
         }
     }
 }
