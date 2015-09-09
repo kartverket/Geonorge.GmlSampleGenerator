@@ -176,20 +176,68 @@ namespace Kartverket.Generators
 
         private bool IsAssignable(XElement xsdPropertyElm)
         {
-            string type = xsdPropertyElm.Attribute("type").Value;
-            return _sampleDataGenerator.SupportsType(type);
+            XAttribute typeAttr = xsdPropertyElm.Attribute("type");
+
+            return _sampleDataGenerator.SupportsType(typeAttr.Value) || IsEnumType(typeAttr);
         }
+
+
 
         private void AssignSampleValue(XElement gmlElement, XElement xsdPropertyElm)
         {
-            string type = xsdPropertyElm.Attribute("type").Value;
-            object sampledata = _sampleDataGenerator.GenerateForType(type);
+            object sampledata;
+
+            XAttribute typeAttr = xsdPropertyElm.Attribute("type");
+
+            if (IsEnumType(typeAttr))
+            {
+                sampledata = PickEnumValue(typeAttr);
+            }
+            else
+            {
+                string type = xsdPropertyElm.Attribute("type").Value;
+                sampledata = _sampleDataGenerator.GenerateForType(type);
+            }
+
             gmlElement.Add(sampledata);
+        }
+
+        private string PickEnumValue(XAttribute typeAttr)
+        {
+            string enumValue = "enum-value";
+
+            XElement simpleTypeElm = GetElementByAttribute(typeAttr);
+
+            XElement restrictionElm = simpleTypeElm.Element(GetXName("restriction"));
+            if (restrictionElm != null)
+            {
+                IEnumerable<XElement> enumElements = restrictionElm.Elements(GetXName("enumeration"));
+                enumValue = PickRandomElement(enumElements).Attribute("value").Value;
+            }
+            else
+            {
+                XElement unionElm = simpleTypeElm.Element(GetXName("union"));
+                if (unionElm != null) enumValue = PickEnumValue(unionElm.Attribute("memberTypes"));
+            }
+
+            return enumValue;
+        }
+
+        private XElement PickRandomElement(IEnumerable<XElement> enumElements)
+        {
+            if (enumElements == null || enumElements.Count() == 0) return null;
+
+            return enumElements.ElementAt(new Random().Next(enumElements.Count()));
+        }
+
+        private bool IsEnumType(XAttribute typeAttr)
+        {
+            return IsTag("simpleType", GetElementByAttribute(typeAttr));
         }
 
         private bool IsTag(string tagName, XElement xsdElement)
         {
-            return xsdElement.Name.LocalName == tagName;
+            return xsdElement != null && xsdElement.Name.LocalName == tagName;
         }
 
         private bool HasAttributeDefined(string attrName, XElement element)
@@ -204,7 +252,12 @@ namespace Kartverket.Generators
 
         private XElement GetElementByAttribute(XAttribute attribute)
         {
-            return (attribute != null) ? GetElementByName(WithoutNSPrefix(attribute.Value)) : null;
+            return (attribute != null) ? GetElementByName(WithoutNSPrefix(SingleAttrValue(attribute.Value))) : null;
+        }
+
+        private string SingleAttrValue(string attrValue)
+        {
+            return attrValue.Split(' ')[0]; // "app:SomeValue app:AnotherValue" becomes "app:SomeValue"
         }
 
         private string WithoutNSPrefix(string prefixedValue)
