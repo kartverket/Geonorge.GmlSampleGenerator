@@ -178,7 +178,7 @@ namespace Kartverket.Generators
         {
             XAttribute typeAttr = xsdPropertyElm.Attribute("type");
 
-            return _sampleDataGenerator.SupportsType(typeAttr.Value) || IsEnumType(typeAttr);
+            return _sampleDataGenerator.SupportsType(typeAttr.Value) || IsEnumType(typeAttr) || IsCodeType(typeAttr);
         }
 
 
@@ -192,6 +192,10 @@ namespace Kartverket.Generators
             if (IsEnumType(typeAttr))
             {
                 sampledata = PickEnumValue(typeAttr);
+            }
+            else if(IsCodeType(typeAttr))
+            {
+                sampledata = "-kodelisteverdi-"; // TODO: Pick from code-list
             }
             else
             {
@@ -233,6 +237,11 @@ namespace Kartverket.Generators
         private bool IsEnumType(XAttribute typeAttr)
         {
             return IsTag("simpleType", GetElementByAttribute(typeAttr));
+        }
+
+        private bool IsCodeType(XAttribute typeAttr)
+        {
+            return typeAttr.Value.Equals("gml:CodeType");
         }
 
         private bool IsTag(string tagName, XElement xsdElement)
