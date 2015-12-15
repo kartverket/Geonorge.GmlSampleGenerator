@@ -170,6 +170,7 @@
     <Content Include="robots.txt" />
     <Content Include="Scripts\file-inputelement-handling.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="Views\Shared\_SharedMenu.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -189,7 +190,6 @@
     <Content Include="Web.Test.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Views\Shared\_SharedMenu.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
