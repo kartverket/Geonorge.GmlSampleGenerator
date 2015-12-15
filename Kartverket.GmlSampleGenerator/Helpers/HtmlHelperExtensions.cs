@@ -1,4 +1,4 @@
-﻿using Kartverket.GmlSampleGenerator.Models;
+﻿using Kartverket.GmlSampleGenerator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +20,14 @@ namespace Kartverket.GmlSampleGenerator.Helpers
         public static string GeonorgeUrl(this HtmlHelper helper)
         {
             return WebConfigurationManager.AppSettings["GeonorgeUrl"];
+        }
+        public static string KartkatalogenUrl(this HtmlHelper helper)
+        {
+            return WebConfigurationManager.AppSettings["KartkatalogenUrl"];
+        }
+        public static string RegistryUrl(this HtmlHelper helper)
+        {
+            return WebConfigurationManager.AppSettings["RegistryUrl"];
         }
     }
 }
