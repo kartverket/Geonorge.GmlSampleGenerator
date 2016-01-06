@@ -29,5 +29,9 @@ namespace Kartverket.GmlSampleGenerator.Helpers
         {
             return WebConfigurationManager.AppSettings["RegistryUrl"];
         }
+        public static string EnvironmentName(this HtmlHelper helper)
+        {
+            return WebConfigurationManager.AppSettings["EnvironmentName"];
+        }
     }
 }
