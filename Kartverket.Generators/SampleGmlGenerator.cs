@@ -56,6 +56,9 @@ namespace Kartverket.Generators
 
             GenerateFeatureData(featureMembers, GetBaseClasses());
 
+            foreach (var featureMember in featureMembers.Elements())
+                featureMember.Add(new XAttribute(_xmlns_gml + "id", "_" + Guid.NewGuid()));
+
             featureCollection.Add(featureMembers);
 
             gmlDoc.Add(featureCollection);
