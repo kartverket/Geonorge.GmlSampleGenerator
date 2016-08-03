@@ -22,7 +22,7 @@ namespace Kartverket.Generators.Tests
             xsdFileStream.Close();
 
             // Save the gml on disk for the purpose of this test:
-            string gmlFilePath = @"C:\Users\Jørgen\Dropbox (Arkitektum AS)\dev\Kartverket.GmlSampleGenerator\Kartverket.GmlSampleGenerator\generated\test.gml";
+            string gmlFilePath = @"C:\temp\test.gml";
             string targetDirectory = Path.GetDirectoryName(gmlFilePath);
             if (!Directory.Exists(targetDirectory))
                 Directory.CreateDirectory(targetDirectory);
