@@ -94,11 +94,22 @@ namespace Kartverket.Generators
         private void GeneratePropertyData(XElement gmlDataContainer, XElement xsdPropertyElm)
         {
             if (xsdPropertyElm == null) return;
+            if (IsAssignable(xsdPropertyElm)) {
 
-            if (IsRefferer(xsdPropertyElm))
+                XElement gmlDataElm = new XElement(_targetNamespace + xsdPropertyElm.Attribute("name").Value); 
+                gmlDataContainer.Add(gmlDataElm); 
+                AssignSampleValue(gmlDataElm, xsdPropertyElm);
+            }
+            else if (IsAssosiation(xsdPropertyElm))
+            {
+                XElement gmlDataElm = new XElement(_targetNamespace + xsdPropertyElm.Attribute("name").Value, new XAttribute(_xmlns_xlink + "href", "todo_realid_" + Guid.NewGuid().ToString()));
+                gmlDataContainer.Add(gmlDataElm);
+            }
+            else if (IsGroupelement(xsdPropertyElm)) //TODO denne er ikke riktig, vanskelig å skille med en assosiasjon fra XSD
             {
                 XAttribute refAttr = xsdPropertyElm.Attribute("ref");
                 GeneratePropertyData(gmlDataContainer, GetElementByAttribute(refAttr));
+  
             }
             else if (IsRealizable(xsdPropertyElm))
             {
@@ -121,6 +132,39 @@ namespace Kartverket.Generators
                     GenerateFeatureData(gmlDataElm, GetElementByAttribute(typeAttr));
                 }
             }
+        }
+        private bool HasAssociationAttributeGroup(XElement xsdPropertyElm) {
+            bool hasAssociationAttributeGroup = false;
+
+            if (xsdPropertyElm.Attribute("type") == null)
+            {
+                foreach (XElement elm in xsdPropertyElm.Descendants(GetXName("attributeGroup")))
+                {
+                    XAttribute refAttr = elm.Attribute("ref");
+                    if (refAttr != null && refAttr.Value == "gml:AssociationAttributeGroup")
+                        hasAssociationAttributeGroup = true;
+                }
+            }
+            else {
+                XElement elm = GetElementByAttribute(xsdPropertyElm.Attribute("type"));
+                foreach (XElement elm2 in xsdPropertyElm.Descendants(GetXName("attributeGroup")))
+                {
+                    XAttribute refAttr = elm2.Attribute("ref");
+                    if (refAttr != null && refAttr.Value == "gml:AssociationAttributeGroup")
+                        hasAssociationAttributeGroup = true;
+                }
+            }
+            
+
+            return hasAssociationAttributeGroup;
+        }
+        private bool IsAssosiation(XElement xsdPropertyElm)
+        {
+            //har type/ref har gml:AssociationAttributeGroup
+            bool isassosiation = false;
+            if (HasAssociationAttributeGroup(xsdPropertyElm))
+                isassosiation = true;
+            return isassosiation;
         }
 
         private bool HasInstanceRestriction(XElement xsdPropertyElm)
@@ -164,9 +208,14 @@ namespace Kartverket.Generators
         
         // TODO: Improvement - Create [ bool HasAttributeDefinasAs(XElement element, string attrName, string attrValue) ]
 
-        private bool IsRefferer(XElement xsdElement)
+        private bool IsGroupelement(XElement xsdElement)
         {
-            return HasAttributeDefined("ref", xsdElement);
+            bool isref = false;
+            if (HasAttributeDefined("ref", xsdElement) && xsdElement.Parent != null && !HasAssociationAttributeGroup(xsdElement)) {
+                isref = true;
+                if (xsdElement.Parent.Parent != null) isref = false;
+            }
+            return isref;
         }
 
         private bool IsRealizable(XElement xsdElement)
@@ -180,8 +229,10 @@ namespace Kartverket.Generators
         private bool IsAssignable(XElement xsdPropertyElm)
         {
             XAttribute typeAttr = xsdPropertyElm.Attribute("type");
-
-            return _sampleDataGenerator.SupportsType(typeAttr.Value) || IsEnumType(typeAttr) || IsCodeType(typeAttr);
+            if (typeAttr != null)
+                return _sampleDataGenerator.SupportsType(typeAttr.Value) || IsEnumType(typeAttr) || IsCodeType(typeAttr);
+            else
+                return false;
         }
 
 
