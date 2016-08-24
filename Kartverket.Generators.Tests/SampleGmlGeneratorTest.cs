@@ -69,7 +69,9 @@ namespace Kartverket.Generators.Tests
 
                     vertikalObjekt.Should().NotBeNull();
 
-                    vertikalObjekt.Element(appNamespace + "bestårAvVertikalobjektkomponent").Attribute(XmlNsXlink + "href").Should().NotBeNull();
+                    XElement abstractFeatureType = vertikalObjekt.Element(appNamespace + "bestårAvVertikalobjektkomponent");
+                    abstractFeatureType.Should().NotBeNull();
+                    abstractFeatureType.Attribute(XmlNsXlink + "href").Should().NotBeNull();
 
                     // endringsflagg skal være tilstede med alle sine egenskaper
                     vertikalObjekt.Element(appNamespace + "endringsflagg").HasElements.Should().BeTrue("endringsflagg is an abstract object and should be inlined");

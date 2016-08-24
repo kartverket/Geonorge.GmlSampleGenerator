@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Xml.Linq;
 using System.Linq;
 using System.IO;
@@ -12,17 +13,16 @@ namespace Kartverket.Generators
         private string _xsdFilename;
 
         // TODO: Retrieve all namespaces from xsdDoc?
-        private XNamespace _xmlns_xsd = "http://www.w3.org/2001/XMLSchema";
+        public static readonly XNamespace XmlNsXsd = "http://www.w3.org/2001/XMLSchema";
         public static readonly XNamespace XmlNsGml = "http://www.opengis.net/gml/3.2";
         public static readonly XNamespace XmlNsXlink = "http://www.w3.org/1999/xlink";
-        private XNamespace _xmlns_xsi = "http://www.w3.org/2001/XMLSchema-instance";
+        private static readonly XNamespace XmlNsXsi = "http://www.w3.org/2001/XMLSchema-instance";
         private XNamespace _targetNamespace;
 
         private SampleGmlDataGenerator _sampleDataGenerator;
 
         private Dictionary<XName, int> _frequencyRestrictedTypes;
-        private const int MAX_INSTANCES_RESTRICTED_TYPES = 5;
-
+        private const int MaxInstancesRestrictedTypes = 5;
 
         public SampleGmlGenerator(Stream xsdStream, string xsdFilename)
         {
@@ -85,14 +85,38 @@ namespace Kartverket.Generators
                 GenerateFeatureData(gmlDataContainer, baseContainer);
             }
 
-            foreach (XElement xsdPropertyElm in xsdPropertyContainer.Descendants(GetXName("element")))
+            IEnumerable<XElement> elementsFromContainer = GetElementsFromContainer(xsdPropertyContainer);
+            if (elementsFromContainer != null)
             {
-                GeneratePropertyData(gmlDataContainer, xsdPropertyElm);
+                foreach (XElement xsdPropertyElm in elementsFromContainer)
+                {
+                    GeneratePropertyData(gmlDataContainer, xsdPropertyElm);
+                }
             }
+        }
+
+        private IEnumerable<XElement> GetElementsFromContainer(XElement container)
+        {
+            IEnumerable<XElement> elements = container.Element(XmlNsXsd + "complexContent")?
+                .Element(XmlNsXsd + "extension")?.Element(XmlNsXsd + "sequence")?.Elements(XmlNsXsd + "element");
+
+            if (elements == null)
+            {
+                elements = container.Element(XmlNsXsd + "sequence")?.Elements(XmlNsXsd + "element");
+            }
+
+            if (elements == null)
+            {
+                elements = container?.Elements(XmlNsXsd + "element");
+            }
+            return elements;
+
         }
 
         private void GeneratePropertyData(XElement gmlDataContainer, XElement xsdPropertyElm)
         {
+            XName featureMembers = XName.Get("featureMembers", XmlNsGml.NamespaceName);
+
             if (xsdPropertyElm == null) return;
             if (IsAssignable(xsdPropertyElm)) {
 
@@ -100,16 +124,17 @@ namespace Kartverket.Generators
                 gmlDataContainer.Add(gmlDataElm); 
                 AssignSampleValue(gmlDataElm, xsdPropertyElm);
             }
-            else if (IsAssosiation(xsdPropertyElm))
+            else if (!(gmlDataContainer.Name == featureMembers) && ParentIsAbstractFeatureType(xsdPropertyElm))
             {
+                Trace.WriteLine(xsdPropertyElm.Attribute("name").Value + " is an abstract feature type.");
+
                 XElement gmlDataElm = new XElement(_targetNamespace + xsdPropertyElm.Attribute("name").Value, new XAttribute(XmlNsXlink + "href", "todo_realid_" + Guid.NewGuid().ToString()));
                 gmlDataContainer.Add(gmlDataElm);
             }
-            else if (IsGroupelement(xsdPropertyElm)) //TODO denne er ikke riktig, vanskelig å skille med en assosiasjon fra XSD
+            else if (IsGroupelement(xsdPropertyElm)) 
             {
                 XAttribute refAttr = xsdPropertyElm.Attribute("ref");
                 GeneratePropertyData(gmlDataContainer, GetElementByAttribute(refAttr));
-  
             }
             else if (IsRealizable(xsdPropertyElm))
             {
@@ -133,6 +158,114 @@ namespace Kartverket.Generators
                 }
             }
         }
+
+        private XElement LookupParentFromTypeAttribute(XElement element)
+        {
+            XElement parent = null;
+            XAttribute typeAttribute = element.Attribute("type");
+            if (typeAttribute != null)
+            {
+                parent = GetElementByName(typeAttribute.Value.Replace("app:", ""));
+            }
+            return parent;
+        }
+
+        private XElement LookupParentFromExtensionReference(XElement element)
+        {
+            XElement parent = null;
+            XAttribute referedClass = element.Element(XmlNsXsd + "complexType")
+               ?.Element(XmlNsXsd + "complexContent")
+               ?.Element(XmlNsXsd + "extension")
+               ?.Element(XmlNsXsd + "sequence")
+               ?.Element(XmlNsXsd + "element")
+               ?.Attribute("ref");
+            if (referedClass != null)
+            {
+                parent = GetElementByName(referedClass.Value.Replace("app:", ""));
+            }
+            return parent;
+        }
+
+        private bool ParentIsAbstractFeatureType(XElement xsdPropertyElm)
+        {
+            XElement parent = LookupParentFromSubstitutionGroup(xsdPropertyElm);
+            if (parent != null)
+            {
+                if (HasAbstractFeatureSubstitutionGroup(parent))
+                {
+                    return true;
+                }
+                else
+                {
+                    return ParentIsAbstractFeatureType(parent);
+                }
+            }
+
+            parent = LookupParentFromTypeAttribute(xsdPropertyElm);
+            if (parent != null)
+                return ParentIsAbstractFeatureType(parent);
+
+            parent = LookupParentFromExtensionReference(xsdPropertyElm);
+            if (parent != null)
+                return ParentIsAbstractFeatureType(parent);
+
+            return false;
+        }
+
+        private bool HasAbstractFeatureSubstitutionGroup(XElement element)
+        {
+            bool isAbstractFeature = false;
+            XAttribute substitutionGroup = element.Attribute("substitutionGroup");
+            if (substitutionGroup != null)
+            {
+                Trace.WriteLine("element: " + element.Attribute("name").Value + ", substitutionGroup: " + substitutionGroup.Value);
+
+                isAbstractFeature = substitutionGroup.Value.Equals("gml:AbstractFeature");
+            }
+            return isAbstractFeature;
+        }
+
+
+        private XElement LookupParentFromSubstitutionGroup(XElement element)
+        {
+            XAttribute substitutionGroup = element.Attribute("substitutionGroup");
+            if (substitutionGroup != null)
+            {
+                Trace.WriteLine("element: " + element.Attribute("name").Value + ", substitutionGroup: " + substitutionGroup.Value);
+
+                if (substitutionGroup.Value.Equals("gml:AbstractFeature"))
+                    return element;
+                else
+                {
+                    return GetElementByName(substitutionGroup.Value.Replace("app:", ""));
+                }
+            }
+            return null;
+        }
+
+        private bool IsAbstractFeatureType(XElement xsdPropertyElm)
+        {
+            XAttribute substitutionGroup = xsdPropertyElm.Attribute("substitutionGroup");
+            if (substitutionGroup != null)
+            {
+                Trace.WriteLine("element: " + xsdPropertyElm.Attribute("name").Value + ", substitutionGroup: " + substitutionGroup.Value);
+
+                if (substitutionGroup.Value.Equals("gml:AbstractFeature"))
+                    return true;
+                else
+                {
+                    XElement parentElement = GetElementByName(substitutionGroup.Value.Replace("app:", ""));
+                    if (parentElement != null)
+                        return IsAbstractFeatureType(parentElement);
+                }
+            }
+
+           
+            return false;
+        }
+
+
+
         private bool HasAssociationAttributeGroup(XElement xsdPropertyElm) {
             bool hasAssociationAttributeGroup = false;
 
@@ -158,15 +291,7 @@ namespace Kartverket.Generators
 
             return hasAssociationAttributeGroup;
         }
-        private bool IsAssosiation(XElement xsdPropertyElm)
-        {
-            //har type/ref har gml:AssociationAttributeGroup
-            bool isassosiation = false;
-            if (HasAssociationAttributeGroup(xsdPropertyElm))
-                isassosiation = true;
-            return isassosiation;
-        }
-
+      
         private bool HasInstanceRestriction(XElement xsdPropertyElm)
         {
             // All other than assignable types has instance restriction
@@ -186,7 +311,7 @@ namespace Kartverket.Generators
         private bool InstanceRestrictionIsExceeded(XElement xsdPropertyElm)
         {
             string typeName = xsdPropertyElm.Attribute("name").Value;
-            return _frequencyRestrictedTypes[typeName] > MAX_INSTANCES_RESTRICTED_TYPES;
+            return _frequencyRestrictedTypes[typeName] > MaxInstancesRestrictedTypes;
         }
 
         private bool IsExtension(XElement xsdPropertyContainer)
@@ -198,24 +323,27 @@ namespace Kartverket.Generators
 
         private XElement GetBaseClasses()
         {
-            object[] baseClasses = (from classElm in _xsdDoc.Element(GetXName("schema")).Elements()
+            IEnumerable<XElement> baseClasses = (from classElm in _xsdDoc.Element(GetXName("schema")).Elements()
                                 where IsRealizable(classElm)
                                     && !(HasAttributeDefined("substitutionGroup", classElm) && classElm.Attribute("substitutionGroup").Value.Equals("gml:AbstractObject"))
-                                select classElm).ToArray();
+                                select classElm);
 
-            return new XElement("BaseClasses", baseClasses);
+            return new XElement(XmlNsXsd + "schema", baseClasses);
         }
         
         // TODO: Improvement - Create [ bool HasAttributeDefinasAs(XElement element, string attrName, string attrValue) ]
 
         private bool IsGroupelement(XElement xsdElement)
         {
+            /*
             bool isref = false;
             if (HasAttributeDefined("ref", xsdElement) && xsdElement.Parent != null && !HasAssociationAttributeGroup(xsdElement)) {
                 isref = true;
                 if (xsdElement.Parent.Parent != null) isref = false;
             }
             return isref;
+            */
+            return HasAttributeDefined("ref", xsdElement);
         }
 
         private bool IsRealizable(XElement xsdElement)
@@ -337,7 +465,7 @@ namespace Kartverket.Generators
 
         private XName GetXName(string elementName)
         {
-            return XName.Get(elementName, _xmlns_xsd.NamespaceName);
+            return XName.Get(elementName, XmlNsXsd.NamespaceName);
         }
 
         private object[] GenerateNamespaces()
@@ -350,8 +478,8 @@ namespace Kartverket.Generators
                     new XAttribute(XNamespace.Xmlns + "gml", XmlNsGml),
                     new XAttribute(XNamespace.Xmlns + "app", _targetNamespace),
                     new XAttribute(XNamespace.Xmlns + "xlink", XmlNsXlink),
-                    new XAttribute(XNamespace.Xmlns + "xsi", _xmlns_xsi),
-                    new XAttribute(_xmlns_xsi + "schemaLocation", "" + _targetNamespace + " " + _targetNamespace + "/" + _xsdFilename)
+                    new XAttribute(XNamespace.Xmlns + "xsi", XmlNsXsi),
+                    new XAttribute(XmlNsXsi + "schemaLocation", "" + _targetNamespace + " " + _targetNamespace + "/" + _xsdFilename)
                 };
         }
     }
