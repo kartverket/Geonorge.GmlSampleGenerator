@@ -89,6 +89,10 @@
     <Compile Include="SampleDataGeneratorTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="luftfartshindre.xsd">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Lufthavn_El.gml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -13,8 +13,8 @@ namespace Kartverket.Generators
 
         // TODO: Retrieve all namespaces from xsdDoc?
         private XNamespace _xmlns_xsd = "http://www.w3.org/2001/XMLSchema";
-        private XNamespace _xmlns_gml = "http://www.opengis.net/gml/3.2";
-        private XNamespace _xmlns_xlink = "http://www.w3.org/1999/xlink";
+        public static readonly XNamespace XmlNsGml = "http://www.opengis.net/gml/3.2";
+        public static readonly XNamespace XmlNsXlink = "http://www.w3.org/1999/xlink";
         private XNamespace _xmlns_xsi = "http://www.w3.org/2001/XMLSchema-instance";
         private XNamespace _targetNamespace;
 
@@ -40,7 +40,7 @@ namespace Kartverket.Generators
             _xsdDoc = XDocument.Load(xsdStream);
             _xsdFilename = xsdFilename;
             _targetNamespace = _xsdDoc.Element(GetXName("schema")).Attribute("targetNamespace").Value;
-            _sampleDataGenerator = new SampleGmlDataGenerator(gmlSettings, _targetNamespace, _xmlns_gml);
+            _sampleDataGenerator = new SampleGmlDataGenerator(gmlSettings, _targetNamespace, XmlNsGml);
             _frequencyRestrictedTypes = new Dictionary<XName, int>();
         }
 
@@ -48,16 +48,16 @@ namespace Kartverket.Generators
         {
             XDocument gmlDoc = new XDocument();
 
-            XAttribute gmlIdAttribute = new XAttribute(_xmlns_gml + "id", "_" + Guid.NewGuid().ToString());
+            XAttribute gmlIdAttribute = new XAttribute(XmlNsGml + "id", "_" + Guid.NewGuid().ToString());
 
-            XElement featureCollection = new XElement(_xmlns_gml + "FeatureCollection", gmlIdAttribute, GenerateNamespaces());
+            XElement featureCollection = new XElement(XmlNsGml + "FeatureCollection", gmlIdAttribute, GenerateNamespaces());
 
-            XElement featureMembers = new XElement(_xmlns_gml + "featureMembers");
+            XElement featureMembers = new XElement(XmlNsGml + "featureMembers");
 
             GenerateFeatureData(featureMembers, GetBaseClasses());
 
             foreach (var featureMember in featureMembers.Elements())
-                featureMember.Add(new XAttribute(_xmlns_gml + "id", "_" + Guid.NewGuid()));
+                featureMember.Add(new XAttribute(XmlNsGml + "id", "_" + Guid.NewGuid()));
 
             featureCollection.Add(featureMembers);
 
@@ -102,7 +102,7 @@ namespace Kartverket.Generators
             }
             else if (IsAssosiation(xsdPropertyElm))
             {
-                XElement gmlDataElm = new XElement(_targetNamespace + xsdPropertyElm.Attribute("name").Value, new XAttribute(_xmlns_xlink + "href", "todo_realid_" + Guid.NewGuid().ToString()));
+                XElement gmlDataElm = new XElement(_targetNamespace + xsdPropertyElm.Attribute("name").Value, new XAttribute(XmlNsXlink + "href", "todo_realid_" + Guid.NewGuid().ToString()));
                 gmlDataContainer.Add(gmlDataElm);
             }
             else if (IsGroupelement(xsdPropertyElm)) //TODO denne er ikke riktig, vanskelig å skille med en assosiasjon fra XSD
@@ -347,9 +347,9 @@ namespace Kartverket.Generators
 
             return new object[] 
                 {
-                    new XAttribute(XNamespace.Xmlns + "gml", _xmlns_gml),
+                    new XAttribute(XNamespace.Xmlns + "gml", XmlNsGml),
                     new XAttribute(XNamespace.Xmlns + "app", _targetNamespace),
-                    new XAttribute(XNamespace.Xmlns + "xlink", _xmlns_xlink),
+                    new XAttribute(XNamespace.Xmlns + "xlink", XmlNsXlink),
                     new XAttribute(XNamespace.Xmlns + "xsi", _xmlns_xsi),
                     new XAttribute(_xmlns_xsi + "schemaLocation", "" + _targetNamespace + " " + _targetNamespace + "/" + _xsdFilename)
                 };
