@@ -1,10 +1,4 @@
-﻿using Kartverket.GmlSampleGenerator;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Web;
-using System.Web.Configuration;
+﻿using System.Web.Configuration;
 using System.Web.Mvc;
 
 namespace Kartverket.GmlSampleGenerator.Helpers
@@ -13,7 +7,7 @@ namespace Kartverket.GmlSampleGenerator.Helpers
     {
         public static string ApplicationVersionNumber(this HtmlHelper helper)
         {
-            string versionNumber = WebConfigurationManager.AppSettings["BuildVersionNumber"];
+            var versionNumber = WebConfigurationManager.AppSettings["BuildVersionNumber"];
             return versionNumber;
         }
 
@@ -21,14 +15,17 @@ namespace Kartverket.GmlSampleGenerator.Helpers
         {
             return WebConfigurationManager.AppSettings["GeonorgeUrl"];
         }
+
         public static string KartkatalogenUrl(this HtmlHelper helper)
         {
             return WebConfigurationManager.AppSettings["KartkatalogenUrl"];
         }
+
         public static string RegistryUrl(this HtmlHelper helper)
         {
             return WebConfigurationManager.AppSettings["RegistryUrl"];
         }
+
         public static string EnvironmentName(this HtmlHelper helper)
         {
             return WebConfigurationManager.AppSettings["EnvironmentName"];
