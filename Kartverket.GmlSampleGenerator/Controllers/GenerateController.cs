@@ -52,7 +52,7 @@ namespace Kartverket.GmlSampleGenerator.Controllers
         private FileContentResult GmlFileFromXsdStream(Stream xsdStream, string xsdFilename)
         {
             MemoryStream gmlStream = new SampleGmlGenerator(xsdStream, xsdFilename).GenerateGml();
-            string gmlFileName = "generatedFromXsd_" + Path.GetFileNameWithoutExtension(xsdFilename) + ".gml";
+            string gmlFileName = "generatedFromXsd_" + Path.GetFileNameWithoutExtension(xsdFilename) + ".xml";
 
             return File(gmlStream.ToArray(), "text/xml", gmlFileName);
         }
