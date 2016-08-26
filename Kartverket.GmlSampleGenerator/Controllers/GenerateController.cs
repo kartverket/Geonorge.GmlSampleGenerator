@@ -1,4 +1,5 @@
-﻿using Kartverket.Generators;
+﻿using System;
+using Kartverket.Generators;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -9,14 +10,7 @@ namespace Kartverket.GmlSampleGenerator.Controllers
 {
     public class GenerateController : Controller
     {
-        // GET: Generate
         public ActionResult Index()
-        {
-            return RedirectToAction("GmlFromXsd");
-        }
-
-        [HttpGet]
-        public ActionResult GmlFromXsd()
         {
             return View();
         }
