@@ -18,8 +18,9 @@ namespace Kartverket.GmlSampleGenerator.Controllers
         [HttpPost]
         public FileContentResult GmlFromXsdUrl(string urlToXsd)
         {
-            if (!string.IsNullOrEmpty(urlToXsd)) // TODO: Validate url
+            if (!string.IsNullOrEmpty(urlToXsd)) 
             {
+                CheckFileSize(urlToXsd);
                 Stream xsdStream = WebRequest.Create(urlToXsd).GetResponse().GetResponseStream();
                 string xsdFilename = urlToXsd.Split('/').Last();
 
@@ -52,6 +53,22 @@ namespace Kartverket.GmlSampleGenerator.Controllers
             string gmlFileName = $"{fileNameWithoutExtension}-Example-GML-{timestamp}.xml";
 
             return File(gmlStream.ToArray(), "text/xml", gmlFileName);
+        }
+
+        private void CheckFileSize(string urlToXsd)
+        {
+            Stream xsdStream = WebRequest.Create(urlToXsd).GetResponse().GetResponseStream();
+
+            var buffer = new byte[4096];
+            long totalBytesRead = 0;
+            int bytesRead;
+
+            while ((bytesRead = xsdStream.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                totalBytesRead += bytesRead;
+                if (totalBytesRead > 10485760) // 10 MB
+                    throw new Exception("File size too large");
+            }
         }
     }
 }
