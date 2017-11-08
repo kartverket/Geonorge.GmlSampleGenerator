@@ -1,4 +1,4 @@
-﻿@using Kartverket.GmlSampleGenerator.Helpers﻿
+﻿@using Kartverket.GmlSampleGenerator.Helpers
 
 <!DOCTYPE html>
 <html class=" js flexbox no-flexboxlegacy canvas canvastext webgl no-touch geolocation postmessage no-websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients no-cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg no-smil svgclippaths">
@@ -71,6 +71,13 @@
         </div>
 
     </div>
-    @RenderPage("~/Content/bower_components/kartverket-felleskomponenter/assets/partials/_Footer.cshtml")
+@if (CultureHelper.IsNorwegian())
+{
+    @RenderPage("~/Content/bower_components/kartverket-felleskomponenter/assets/partials/_Footer.min.cshtml");
+}
+else
+{
+    @RenderPage("~/Content/bower_components/kartverket-felleskomponenter/assets/partials/_Footer_eng.min.cshtml");
+}
 </body>
 </html>
