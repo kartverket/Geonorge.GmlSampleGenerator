@@ -1,4 +1,5 @@
 ﻿@using Kartverket.GmlSampleGenerator.Helpers
+@using Kartverket.GmlSampleGenerator.Resources
 
 <!DOCTYPE html>
 <html class=" js flexbox no-flexboxlegacy canvas canvastext webgl no-touch geolocation postmessage no-websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients no-cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg no-smil svgclippaths">
@@ -45,7 +46,7 @@
         <div class="container container-breadcrumbs" id="navTabCont">
             <ul class="breadcrumbs col-md-12">
                 <li><a href="@Html.GeonorgeUrl()">Geonorge</a></li>
-                <li><a href="/">GML eksempler</a></li>
+                <li><a href="/">@UI.GmlExamples</a></li>
                 @RenderSection("breadcrumb", false)
             </ul>
         </div>
