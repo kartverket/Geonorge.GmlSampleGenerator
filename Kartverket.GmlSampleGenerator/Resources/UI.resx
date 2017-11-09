@@ -117,6 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Error" xml:space="preserve">
+    <value>Feil</value>
+  </data>
+  <data name="ErrorInfo" xml:space="preserve">
+    <value>Det har desverre skjedd en feil med din forespørsel. Prøv igjen om litt.</value>
+  </data>
+  <data name="ErrorReport" xml:space="preserve">
+    <value>&lt;p&gt;Feilen er logget og vil sjekkes av systemansvarlig.&lt;/p&gt;
+&lt;p&gt;Du kan også rapportere feilen til &lt;a mailto:"post@norgedigitalt.no"&gt;post@norgedigitalt.no&lt;/a&gt;.&lt;/p&gt;</value>
+  </data>
   <data name="GmlExamples" xml:space="preserve">
     <value>GML eksempler</value>
   </data>

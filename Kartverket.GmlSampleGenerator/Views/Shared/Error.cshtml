@@ -1,9 +1,13 @@
-﻿@model System.Web.Mvc.HandleErrorInfo
+﻿@using Kartverket.GmlSampleGenerator.Resources
+@model HandleErrorInfo
 
 @{
-    ViewBag.Title = "Error";
+    ViewBag.Title = UI.Error;
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
-
+<h1 class="text-danger"><p>@UI.ErrorInfo</p></h1>
+@if (HttpContext.Current.IsCustomErrorEnabled)
+{
+    <p>@UI.Error: @Model.Exception.Message</p>
+}
+@Html.Raw(UI.ErrorReport)

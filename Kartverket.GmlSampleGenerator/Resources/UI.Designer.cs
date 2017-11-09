@@ -61,6 +61,34 @@ namespace Kartverket.GmlSampleGenerator.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Feil.
+        /// </summary>
+        public static string Error {
+            get {
+                return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Det har desverre skjedd en feil med din forespørsel. Prøv igjen om litt..
+        /// </summary>
+        public static string ErrorInfo {
+            get {
+                return ResourceManager.GetString("ErrorInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;p&gt;Feilen er logget og vil sjekkes av systemansvarlig.&lt;/p&gt;
+        ///&lt;p&gt;Du kan også rapportere feilen til &lt;a mailto:&quot;post@norgedigitalt.no&quot;&gt;post@norgedigitalt.no&lt;/a&gt;.&lt;/p&gt;.
+        /// </summary>
+        public static string ErrorReport {
+            get {
+                return ResourceManager.GetString("ErrorReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to GML eksempler.
         /// </summary>
         public static string GmlExamples {
