@@ -21,26 +21,22 @@
         }
         GML eksempler
     </title>
-    <!-- Stylesheets -->
-    @Styles.Render("~/Content/bower_components/kartverket-felleskomponenter/assets/css/styles")
-    <!-- Scripts -->
+
     <script>
         var applicationEnvironment = '@Html.EnvironmentName()';
         var applicationVersionNumber = '@Html.ApplicationVersionNumber()';
     </script>
-    @Scripts.Render("~/Content/bower_components/kartverket-felleskomponenter/assets/scripts")
 
     @RenderSection("head", false)
 
-    @RenderSection("scripts", false)
 </head>
 
-<body class="geonorge-container geonorge ng-scope" ng-app="geonorge">
+<body class="geonorge-container geonorge">
 
     <div id="loading-animation" class="loading-animation" style="display: none;"></div>
-    
-    @RenderPage("~/Content/bower_components/kartverket-felleskomponenter/assets/partials/_Analytics.min.cshtml")
-    @RenderPage("~/Content/bower_components/kartverket-felleskomponenter/assets/partials/_SharedMenu.min.cshtml")
+
+    @Html.Raw(File.ReadAllText(Server.MapPath("~/dist/partials/Header.html")))
+    @Styles.Render("~/Content/bower_components/kartverket-felleskomponenter/assets/css/styles")
 
     <div class="body-content">
         <div class="container container-breadcrumbs" id="navTabCont">
@@ -52,13 +48,13 @@
         </div>
 
         @if (TempData["success"] != null)
-            {
+        {
             <div class="alert alert-success">
                 @TempData["success"]
             </div>
         }
         @if (TempData["failure"] != null)
-            {
+        {
             <div class="alert alert-danger">
                 @TempData["failure"]
             </div>
@@ -72,13 +68,30 @@
         </div>
 
     </div>
-@if (CultureHelper.IsNorwegian())
-{
-    @RenderPage("~/Content/bower_components/kartverket-felleskomponenter/assets/partials/_Footer.min.cshtml");
-}
-else
-{
-    @RenderPage("~/Content/bower_components/kartverket-felleskomponenter/assets/partials/_Footer_eng.min.cshtml");
-}
+    @if (CultureHelper.IsNorwegian())
+    {
+        @RenderPage("~/Content/bower_components/kartverket-felleskomponenter/assets/partials/_Footer.min.cshtml");
+    }
+    else
+    {
+        @RenderPage("~/Content/bower_components/kartverket-felleskomponenter/assets/partials/_Footer_eng.min.cshtml");
+    }
+
+    <script>
+        searchOption.supportsLogin = false;
+        searchOption.supportsCulture = false;
+        searchOption.epiBaseUrl = '@Html.GeonorgeUrl()';
+        var orderItems = Cookies.get('orderitems');
+        if (orderItems && orderItems > 0) {
+            $('.downloads__count').show();
+            $('.downloads__count').text(orderItems);
+        }
+    </script>
+
+    @Scripts.Render("~/Content/bower_components/kartverket-felleskomponenter/assets/js/scripts")
+    @RenderPage("~/Content/bower_components/kartverket-felleskomponenter/assets/partials/_Analytics.min.cshtml")
+
+    @RenderSection("scripts", false)
+
 </body>
 </html>
