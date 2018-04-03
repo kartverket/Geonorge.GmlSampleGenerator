@@ -157,3 +157,6 @@ $RECYCLE.BIN/
 
 # Visual Studio 2015 IDE folder
 .vs
+
+# npm packages 
+node_modules/
