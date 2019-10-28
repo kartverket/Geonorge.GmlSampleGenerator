@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using NUnit.Framework;
+using Xunit;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Linq;
@@ -9,7 +9,7 @@ namespace Kartverket.Generators.Tests
 {
     public class SampleGmlGeneratorTest
     {
-        [Test]
+        [Fact]
         public void ShouldGenerateSampleGmlIdenticalToGiven()
         {
             // Simulate stream from web project controller by opening a local file:
@@ -44,7 +44,7 @@ namespace Kartverket.Generators.Tests
             //XDocument referenceGml = XDocument.Load("Lufthavn_El.gml");
         }
 
-        [Test]
+        [Fact]
         public void ShouldGenerateXlinkElementForAttributesThatAreAbstractFeatures()
         {
             // Simulate stream from web project controller by opening a local file:
