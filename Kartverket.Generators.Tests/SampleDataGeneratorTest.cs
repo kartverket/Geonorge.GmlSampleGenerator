@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using NUnit.Framework;
+using Xunit;
 using System;
 using System.Xml.Linq;
 
@@ -7,7 +7,7 @@ namespace Kartverket.Generators.Tests
 {
     public class SampleDataGeneratorTest
     {
-        [Test]
+        [Fact]
         public void ShouldDeterminWhetherTypeIsSupported()
         {
             SampleDataGenerator dataGenerator = new SampleDataGenerator();
@@ -15,7 +15,7 @@ namespace Kartverket.Generators.Tests
             dataGenerator.SupportsType("noType").Should().BeFalse();
         }
         
-        [Test]
+        [Fact]
         public void ShouldGenerateDataAccordingToGivenTypes()
         {
             SampleDataGenerator dataGenerator = new SampleDataGenerator();
