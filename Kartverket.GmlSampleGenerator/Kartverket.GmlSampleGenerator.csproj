@@ -436,12 +436,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include=".bowerrc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="bower.json" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\UI.en.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>UI.en.Designer.cs</LastGenOutput>
